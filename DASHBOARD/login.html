@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login — MOTO PRO</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="../fotos/logo.png">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+</head>
+<body class="login-body">
+    <div class="login-box">
+        <img src="../fotos/logo.png" alt="MOTO PRO" style="width:100px;height:auto;margin-bottom:16px;display:block;margin-left:auto;margin-right:auto;">
+        <h2>Panel de Administración</h2>
+        <p>Acceso exclusivo para administradores</p>
+        <input type="email" id="adminEmail" class="input-login" placeholder="Correo administrador">
+        <input type="password" id="adminPass" class="input-login" placeholder="Contraseña" onkeydown="if(event.key==='Enter') adminLogin()">
+        <button class="btn-login-submit" onclick="adminLogin()">INGRESAR</button>
+        <p id="loginError" class="login-error"></p>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="assets/js/dashboard.js"></script>
+</body>
+</html>

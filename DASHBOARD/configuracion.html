@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración — MOTO PRO Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <style>
+        .config-layout {
+            display: grid;
+            grid-template-columns: 220px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+        .config-tabs {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .config-tab {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 18px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text2);
+            border-left: 3px solid transparent;
+            transition: all 0.2s;
+            border-bottom: 1px solid var(--border);
+        }
+        .config-tab:last-child { border-bottom: none; }
+        .config-tab:hover { background: var(--bg); color: var(--text); }
+        .config-tab.activo { background: var(--bg); color: var(--primary); border-left-color: var(--primary); }
+        .config-tab i { width: 16px; text-align: center; }
+
+        .config-panel { display: none; }
+        .config-panel.activo { display: block; }
+
+        .config-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 20px;
+        }
+        .config-card-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 22px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .config-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .config-grid-1 { display: grid; grid-template-columns: 1fr; gap: 16px; }
+        .form-field { display: flex; flex-direction: column; gap: 6px; }
+        .form-field label { font-size: 12px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-field input,
+        .form-field select,
+        .form-field textarea {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 13px;
+            color: var(--text);
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .form-field input:focus,
+        .form-field select:focus,
+        .form-field textarea:focus { border-color: var(--primary); }
+        .form-field textarea { resize: vertical; min-height: 90px; }
+        .form-field select option { background: var(--card); }
+
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .toggle-row:last-child { border-bottom: none; }
+        .toggle-info strong { font-size: 13px; font-weight: 600; color: var(--text); }
+        .toggle-info p { font-size: 12px; color: var(--text3); margin-top: 2px; }
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+        .toggle-switch input { display: none; }
+        .toggle-slider {
+            position: absolute;
+            inset: 0;
+            background: var(--border);
+            border-radius: 24px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: #fff;
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+            transition: transform 0.3s;
+        }
+        .toggle-switch input:checked + .toggle-slider { background: var(--primary); }
+        .toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+        .db-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .db-row:last-child { border-bottom: none; }
+        .db-label { font-size: 12px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+        .db-val { font-size: 13px; color: var(--text); font-weight: 500; }
+        .db-badge { font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 700; }
+        .db-badge.verde { background: #22c55e18; color: #22c55e; }
+        .db-badge.rojo  { background: #ef444418; color: #ef4444; }
+
+        .toast-config {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #22c55e;
+            color: #fff;
+            padding: 12px 22px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            z-index: 9999;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .toast-config.show { display: flex; animation: fadeSlide 0.3s ease; }
+        @keyframes fadeSlide {
+            from { opacity:0; transform:translateY(10px); }
+            to   { opacity:1; transform:translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo" style="justify-content:center;">
+        <img src="../fotos/logo.png" alt="MOTO PRO" style="height:48px;width:auto;object-fit:contain;">
+    </div>
+    <nav class="sidebar-nav">
+        <div class="sidebar-section">Principal</div>
+        <a href="home.html"><i class="fas fa-chart-pie"></i> Dashboard</a>
+        <a href="citas.html"><i class="fas fa-calendar-alt"></i> Citas</a>
+        <a href="pedidos.html"><i class="fas fa-shopping-cart"></i> Pedidos</a>
+        <a href="usuarios.html"><i class="fas fa-users"></i> Usuarios</a>
+        <a href="inventario.html"><i class="fas fa-warehouse"></i> Inventario</a>
+        <div class="sidebar-section">Análisis</div>
+        <a href="reportes.html"><i class="fas fa-chart-bar"></i> Reportes</a>
+        <div class="sidebar-section">Sistema</div>
+        <a href="configuracion.html" class="active"><i class="fas fa-cog"></i> Configuración</a>
+    </nav>
+    <div class="sidebar-footer">
+        <a href="#" onclick="adminLogout()"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+    </div>
+</aside>
+
+<main class="main" id="mainContent">
+    <header class="topbar">
+        <div class="topbar-left">
+            <button class="sidebar-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+            <div>
+                <h2>Configuración</h2>
+                <div class="breadcrumb">Admin / <span>Configuración</span></div>
+            </div>
+        </div>
+        <div class="topbar-right">
+            <div class="notif-wrap" id="notifWrap">
+                <button class="topbar-badge" id="notifBtn" onclick="toggleNotifs()">
+                    <i class="fas fa-bell"></i>
+                    <span class="notif-dot" id="notifDot" style="display:none;"></span>
+                </button>
+                <div class="notif-panel" id="notifPanel">
+                    <div class="notif-header"><strong>Notificaciones</strong></div>
+                    <div id="notifLista"><p style="color:var(--text3);padding:20px;text-align:center;font-size:13px;">Sin notificaciones nuevas</p></div>
+                </div>
+            </div>
+            <div class="admin-avatar-wrap" style="position:relative;">
+                <div class="admin-avatar" title="Kenner — Admin" onclick="toggleAvatarMenu()" style="cursor:pointer;">K</div>
+                <div id="avatarMenu" class="avatar-menu">
+                    <div class="avatar-menu-header">Administrador</div>
+                    <a href="configuracion.html"><i class="fas fa-cog" style="color:var(--primary);"></i> Configuración</a>
+                    <a href="#" onclick="adminLogout()" class="danger"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="content">
+        <div class="config-layout">
+
+            <!-- TABS LATERAL -->
+            <div class="config-tabs">
+                <div class="config-tab activo" onclick="cambiarTab('general', this)">
+                    <i class="fas fa-store"></i> General
+                </div>
+                <div class="config-tab" onclick="cambiarTab('cuenta', this)">
+                    <i class="fas fa-user-circle"></i> Mi Cuenta
+                </div>
+                <div class="config-tab" onclick="cambiarTab('notificaciones', this)">
+                    <i class="fas fa-bell"></i> Notificaciones
+                </div>
+                <div class="config-tab" onclick="cambiarTab('pagos', this)">
+                    <i class="fas fa-credit-card"></i> Pagos
+                </div>
+                <div class="config-tab" onclick="cambiarTab('supabase', this)">
+                    <i class="fas fa-database"></i> Supabase
+                </div>
+            </div>
+
+            <!-- PANELES -->
+            <div>
+
+                <!-- ===== GENERAL ===== -->
+                <div class="config-panel activo" id="panel-general">
+                    <div class="config-card">
+                        <div class="config-card-title"><i class="fas fa-store"></i> Información General de la Tienda</div>
+                        <div class="config-grid-2" style="margin-bottom:16px;">
+                            <div class="form-field">
+                                <label>Nombre de la Tienda</label>
+                                <input type="text" id="cfg-nombre" value="MOTO PRO">
+                            </div>
+                            <div class="form-field">
+                                <label>Email de Contacto</label>
+                                <input type="email" id="cfg-email" value="info@motopro.com.co">
+                            </div>
+                            <div class="form-field">
+                                <label>Teléfono / WhatsApp</label>
+                                <input type="text" id="cfg-telefono" value="+57 311 387 4894">
+                            </div>
+                            <div class="form-field">
+                                <label>Moneda</label>
+                                <select id="cfg-moneda">
+                                    <option selected>COP — Peso Colombiano</option>
+                                    <option>USD — Dólar Americano</option>
+                                    <option>EUR — Euro</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="config-grid-1" style="margin-bottom:16px;">
+                            <div class="form-field">
+                                <label>Descripción de la Tienda</label>
+                                <textarea id="cfg-descripcion">Taller especializado en motos en Cartagena, Colombia. Repuestos originales, mantenimiento y servicio técnico profesional.</textarea>
+                            </div>
+                            <div class="form-field">
+                                <label>Dirección</label>
+                                <input type="text" id="cfg-direccion" value="Av. Pedro de Heredia #35-12, Cartagena, Bolívar">
+                            </div>
+                        </div>
+                        <button class="btn-admin primary" onclick="guardarGeneral()">
+                            <i class="fas fa-save"></i> Guardar Cambios
+                        </button>
+                    </div>
+
+                    <div class="config-card">
+                        <div class="config-card-title"><i class="fas fa-clock"></i> Horario de Atención</div>
+                        <div class="config-grid-2">
+                            <div class="form-field">
+                                <label>Días de atención</label>
+                                <input type="text" id="cfg-dias" value="Lunes — Sábado">
+                            </div>
+                            <div class="form-field">
+                                <label>Horario</label>
+                                <input type="text" id="cfg-horario" value="8:00am — 6:00pm">
+                            </div>
+                        </div>
+                        <button class="btn-admin primary" style="margin-top:16px;" onclick="guardarGeneral()">
+                            <i class="fas fa-save"></i> Guardar Cambios
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ===== MI CUENTA ===== -->
+                <div class="config-panel" id="panel-cuenta">
+                    <div class="config-card">
+                        <div class="config-card-title"><i class="fas fa-user-circle"></i> Datos del Administrador</div>
+                        <div class="config-grid-2" style="margin-bottom:16px;">
+                            <div class="form-field">
+                                <label>Nombre</label>
+                                <input type="text" value="Kenner Barrios">
+                            </div>
+                            <div class="form-field">
+                                <label>Email Admin</label>
+                                <input type="email" value="kenner7894@gmail.com" readonly style="opacity:0.6;cursor:not-allowed;">
+                            </div>
+                        </div>
+                        <button class="btn-admin primary" onclick="mostrarToast()">
+                            <i class="fas fa-save"></i> Guardar Cambios
+                        </button>
+                    </div>
+                    <div class="config-card">
+                        <div class="config-card-title"><i class="fas fa-lock"></i> Cambiar Contraseña</div>
+                        <div class="config-grid-2" style="margin-bottom:16px;">
+                            <div class="form-field">
+                                <label>Nueva Contraseña</label>
+                                <div style="position:relative;">
+                                    <input type="password" id="nuevaPassword" placeholder="Mínimo 6 caracteres" style="padding-right:40px;">
+                                    <i class="fas fa-eye" onclick="togglePass('nuevaPassword',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--text3);font-size:14px;"></i>
+                                </div>
+                            </div>
+                            <div class="form-field">
+                                <label>Confirmar Contraseña</label>
+                                <div style="position:relative;">
+                                    <input type="password" id="confirmarPassword" placeholder="Repite la contraseña" style="padding-right:40px;">
+                                    <i class="fas fa-eye" onclick="togglePass('confirmarPassword',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--text3);font-size:14px;"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="passMsg" style="font-size:12px;margin-bottom:12px;display:none;padding:10px 14px;border-radius:8px;"></div>
+                        <button class="btn-admin primary" id="btnCambiarPass" onclick="cambiarPassword()">
+                            <i class="fas fa-lock"></i> Actualizar Contraseña
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ===== NOTIFICACIONES ===== -->
+                <div class="config-panel" id="panel-notificaciones">
+                    <div class="config-card">
+                        <div class="config-card-title"><i class="fas fa-bell"></i> Preferencias de Notificaciones</div>
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <strong>Nueva cita agendada</strong>
+                                <p>Recibir alerta cuando un cliente agende una cita</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <strong>Nuevo pedido recibido</strong>
+                                <p>Recibir alerta cuando se genere un nuevo pedido</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <strong>Nuevo usuario registrado</strong>
+                                <p>Recibir alerta cuando un nuevo cliente se registre</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <strong>Resumen diario por email</strong>
+                                <p>Recibir un resumen diario de actividad al correo</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <strong>Alertas de inventario bajo</strong>
+                                <p>Notificar cuando un producto esté en stock mínimo</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <button class="btn-admin primary" style="margin-top:20px;" onclick="mostrarToast()">
+                            <i class="fas fa-save"></i> Guardar Preferencias
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ===== PAGOS ===== -->
+                <div class="config-panel" id="panel-pagos">
+                    <div class="config-card">
+                        <div class="config-card-title"><i class="fas fa-credit-card"></i> Métodos de Pago Aceptados</div>
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <strong>Pago en efectivo</strong>
+                                <p>El cliente paga al retirar o recibir el pedido</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <strong>Transferencia bancaria</strong>
+                                <p>Nequi, Daviplata o transferencia PSE</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <div class="toggle-row">
+                            <div class="toggle-info">
+                                <strong>Tarjeta de crédito/débito</strong>
+                                <p>Pago con tarjeta en el taller</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        <button class="btn-admin primary" style="margin-top:20px;" onclick="mostrarToast()">
+                            <i class="fas fa-save"></i> Guardar Configuración
+                        </button>
+                    </div>
+                    <div class="config-card">
+                        <div class="config-card-title"><i class="fas fa-university"></i> Datos Bancarios</div>
+                        <div class="config-grid-2" style="margin-bottom:16px;">
+                            <div class="form-field">
+                                <label>Banco</label>
+                                <input type="text" value="Bancolombia">
+                            </div>
+                            <div class="form-field">
+                                <label>Número de Cuenta</label>
+                                <input type="text" value="123-456789-00">
+                            </div>
+                            <div class="form-field">
+                                <label>Nequi / Daviplata</label>
+                                <input type="text" value="+57 311 387 4894">
+                            </div>
+                            <div class="form-field">
+                                <label>Titular</label>
+                                <input type="text" value="MOTO PRO SAS">
+                            </div>
+                        </div>
+                        <button class="btn-admin primary" onclick="mostrarToast()">
+                            <i class="fas fa-save"></i> Guardar Datos
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ===== SUPABASE ===== -->
+                <div class="config-panel" id="panel-supabase">
+                    <div class="config-card">
+                        <div class="config-card-title"><i class="fas fa-database"></i> Estado de Conexión</div>
+                        <div class="db-row">
+                            <span class="db-label">Estado</span>
+                            <span class="db-badge verde" id="dbEstado"><i class="fas fa-circle" style="font-size:8px;margin-right:4px;"></i> Conectado</span>
+                        </div>
+                        <div class="db-row">
+                            <span class="db-label">Proyecto</span>
+                            <span class="db-val">motopro</span>
+                        </div>
+                        <div class="db-row">
+                            <span class="db-label">URL</span>
+                            <span class="db-val" style="font-size:12px;color:var(--text3);">hhjwavixqjdpkvuodumf.supabase.co</span>
+                        </div>
+                        <div class="db-row">
+                            <span class="db-label">Región</span>
+                            <span class="db-val">South America (sa-east-1)</span>
+                        </div>
+                        <div class="db-row">
+                            <span class="db-label">Storage Bucket</span>
+                            <span class="db-badge verde"><i class="fas fa-circle" style="font-size:8px;margin-right:4px;"></i> productos (Público)</span>
+                        </div>
+                        <div class="db-row">
+                            <span class="db-label">Plan</span>
+                            <span class="db-badge verde">Free Tier</span>
+                        </div>
+                    </div>
+                    <div class="config-card">
+                        <div class="config-card-title"><i class="fas fa-table"></i> Tablas en Base de Datos</div>
+                        <div class="db-row">
+                            <span class="db-label">productos</span>
+                            <span class="db-badge verde">Activa</span>
+                        </div>
+                        <div class="db-row">
+                            <span class="db-label">citas</span>
+                            <span class="db-badge verde">Activa</span>
+                        </div>
+                        <div class="db-row">
+                            <span class="db-label">pedidos</span>
+                            <span class="db-badge verde">Activa</span>
+                        </div>
+                        <div class="db-row">
+                            <span class="db-label">usuarios</span>
+                            <span class="db-badge verde">Activa</span>
+                        </div>
+                        <div class="db-row">
+                            <span class="db-label">RLS (Row Level Security)</span>
+                            <span class="db-badge verde">Habilitado</span>
+                        </div>
+                        <button class="btn-admin outline" style="margin-top:20px;" onclick="testConexion()">
+                            <i class="fas fa-plug"></i> Probar Conexión
+                        </button>
+                    </div>
+                </div>
+
+            </div><!-- /paneles -->
+        </div><!-- /config-layout -->
+    </div><!-- /content -->
+</main>
+
+<!-- Toast -->
+<div class="toast-config" id="toastConfig">
+    <i class="fas fa-check-circle"></i> <span id="toastMsg">¡Cambios guardados correctamente!</span>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/dashboard.js"></script>
+<script>
+function cambiarTab(id, el) {
+    document.querySelectorAll('.config-tab').forEach(function(t) { t.classList.remove('activo'); });
+    document.querySelectorAll('.config-panel').forEach(function(p) { p.classList.remove('activo'); });
+    el.classList.add('activo');
+    document.getElementById('panel-' + id).classList.add('activo');
+}
+
+function togglePass(id, icon) {
+    var input = document.getElementById(id);
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+}
+
+async function cambiarPassword() {
+    var nueva      = document.getElementById('nuevaPassword').value;
+    var confirmar  = document.getElementById('confirmarPassword').value;
+    var msg        = document.getElementById('passMsg');
+    var btn        = document.getElementById('btnCambiarPass');
+
+    // Validaciones
+    msg.style.display = 'block';
+    if (!nueva || !confirmar) {
+        msg.style.background = '#ef444418'; msg.style.color = '#ef4444';
+        msg.textContent = '⚠️ Completa ambos campos.'; return;
+    }
+    if (nueva.length < 6) {
+        msg.style.background = '#ef444418'; msg.style.color = '#ef4444';
+        msg.textContent = '⚠️ La contraseña debe tener al menos 6 caracteres.'; return;
+    }
+    if (nueva !== confirmar) {
+        msg.style.background = '#ef444418'; msg.style.color = '#ef4444';
+        msg.textContent = '❌ Las contraseñas no coinciden.'; return;
+    }
+
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Actualizando...';
+    btn.disabled = true;
+
+    try {
+        var db = window.supabase.createClient(
+            'https://hhjwavixqjdpkvuodumf.supabase.co',
+            'sb_publishable_JDcmWaqihSSoUpq9Fo6LCA_7jHTyUy5'
+        );
+        var { error } = await db.auth.updateUser({ password: nueva });
+        if (error) throw error;
+
+        msg.style.background = '#22c55e18'; msg.style.color = '#22c55e';
+        msg.textContent = '✅ ¡Contraseña actualizada! La próxima vez usa la nueva contraseña.';
+        document.getElementById('nuevaPassword').value = '';
+        document.getElementById('confirmarPassword').value = '';
+        mostrarToast('✅ Contraseña actualizada correctamente');
+    } catch(e) {
+        msg.style.background = '#ef444418'; msg.style.color = '#ef4444';
+        msg.textContent = '❌ Error: ' + (e.message || 'No se pudo actualizar. Intenta de nuevo.');
+    }
+
+    btn.innerHTML = '<i class="fas fa-lock"></i> Actualizar Contraseña';
+    btn.disabled = false;
+}
+
+function mostrarToast(msg) {
+    var toast = document.getElementById('toastConfig');
+    document.getElementById('toastMsg').textContent = msg || '¡Cambios guardados correctamente!';
+    toast.classList.add('show');
+    setTimeout(function() { toast.classList.remove('show'); }, 3000);
+}
+
+function guardarGeneral() {
+    // Aquí se podrían guardar en localStorage o Supabase
+    localStorage.setItem('cfg_nombre',     document.getElementById('cfg-nombre').value);
+    localStorage.setItem('cfg_email',      document.getElementById('cfg-email').value);
+    localStorage.setItem('cfg_telefono',   document.getElementById('cfg-telefono').value);
+    localStorage.setItem('cfg_descripcion',document.getElementById('cfg-descripcion').value);
+    localStorage.setItem('cfg_direccion',  document.getElementById('cfg-direccion').value);
+    mostrarToast('¡Configuración guardada correctamente!');
+}
+
+async function testConexion() {
+    var btn = event.currentTarget;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Probando...';
+    btn.disabled = true;
+    try {
+        var db = window.supabase.createClient(
+            'https://hhjwavixqjdpkvuodumf.supabase.co',
+            'sb_publishable_JDcmWaqihSSoUpq9Fo6LCA_7jHTyUy5'
+        );
+        var { data, error } = await db.from('productos').select('id').limit(1);
+        if (error) throw error;
+        document.getElementById('dbEstado').innerHTML = '<i class="fas fa-circle" style="font-size:8px;margin-right:4px;"></i> Conectado';
+        document.getElementById('dbEstado').className = 'db-badge verde';
+        mostrarToast('✅ Conexión a Supabase exitosa');
+    } catch(e) {
+        document.getElementById('dbEstado').innerHTML = '<i class="fas fa-circle" style="font-size:8px;margin-right:4px;"></i> Error';
+        document.getElementById('dbEstado').className = 'db-badge rojo';
+        mostrarToast('❌ Error de conexión: ' + e.message);
+    }
+    btn.innerHTML = '<i class="fas fa-plug"></i> Probar Conexión';
+    btn.disabled = false;
+}
+
+// Cargar valores guardados
+window.addEventListener('load', function() {
+    var campos = ['nombre','email','telefono','descripcion','direccion'];
+    campos.forEach(function(c) {
+        var val = localStorage.getItem('cfg_' + c);
+        var el = document.getElementById('cfg-' + c);
+        if (val && el) el.value = val;
+    });
+});
+</script>
+</body>
+</html>

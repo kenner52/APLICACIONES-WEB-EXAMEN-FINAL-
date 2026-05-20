@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedidos — MOTO PRO Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+</head>
+<body>
+
+<!-- ==================== SIDEBAR ==================== -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo" style="justify-content:center;">
+        <img src="../fotos/logo.png" alt="MOTO PRO" style="height:48px;width:auto;object-fit:contain;">
+    </div>
+    <nav class="sidebar-nav">
+        <div class="sidebar-section">Principal</div>
+        <a href="home.html"><i class="fas fa-chart-pie"></i> Dashboard</a>
+        <a href="citas.html"><i class="fas fa-calendar-alt"></i> Citas</a>
+        <a href="pedidos.html" class="active"><i class="fas fa-shopping-cart"></i> Pedidos</a>
+        <a href="usuarios.html"><i class="fas fa-users"></i> Usuarios</a>
+        <a href="inventario.html"><i class="fas fa-warehouse"></i> Inventario</a>
+        <div class="sidebar-section">Análisis</div>
+        <a href="reportes.html"><i class="fas fa-chart-bar"></i> Reportes</a>
+        <div class="sidebar-section">Sistema</div>
+        <a href="configuracion.html"><i class="fas fa-cog"></i> Configuración</a>
+    </nav>
+    <div class="sidebar-footer">
+        <a href="#" onclick="adminLogout()">
+            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+        </a>
+    </div>
+</aside>
+
+<!-- ==================== MAIN ==================== -->
+<main class="main" id="mainContent">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+        <div class="topbar-left">
+            <button class="sidebar-toggle" onclick="toggleSidebar()" title="Menú">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div>
+                <h2>Pedidos</h2>
+                <div class="breadcrumb">Admin / <span>Pedidos</span></div>
+            </div>
+        </div>
+        <div class="topbar-right">
+            <div class="notif-wrap" id="notifWrap">
+                <button class="topbar-badge" id="notifBtn" onclick="toggleNotifs()" title="Notificaciones">
+                    <i class="fas fa-bell"></i>
+                    <span class="notif-dot" id="notifDot" style="display:none;"></span>
+                </button>
+                <div class="notif-panel" id="notifPanel">
+                    <div class="notif-header"><strong>Notificaciones</strong></div>
+                    <div id="notifLista">
+                        <p style="color:var(--text3);padding:20px 18px;text-align:center;font-size:13px;">
+                            Sin notificaciones nuevas
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-avatar-wrap" style="position:relative;">
+                <div class="admin-avatar" title="Kenner — Admin" onclick="toggleAvatarMenu()" style="cursor:pointer;">K</div>
+                <div id="avatarMenu" class="avatar-menu">
+                    <div class="avatar-menu-header">Administrador</div>
+                    <a href="configuracion.html"><i class="fas fa-cog" style="color:var(--primary);"></i> Configuración</a>
+                    <a href="#" onclick="adminLogout()" class="danger"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+        <!-- ===== PEDIDOS TABLE CARD ===== -->
+        <div class="admin-card">
+
+            <!-- Search bar row -->
+            <div class="search-bar">
+                <div class="search-input-wrap" style="flex:1;">
+                    <i class="fas fa-search"></i>
+                    <input
+                        class="search-input"
+                        type="text"
+                        id="buscarPedidos"
+                        placeholder="Buscar por ID, cliente, producto..."
+                        oninput="buscarEnTabla('buscarPedidos','tablaPedidos')"
+                    >
+                </div>
+            </div>
+
+            <!-- Card header -->
+            <div class="admin-card-header" style="border-top:1px solid var(--border);">
+                <h3><i class="fas fa-shopping-cart"></i> Todos los Pedidos
+                    <span id="totalPedidos" style="font-size:12px;color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0;"></span>
+                </h3>
+            </div>
+
+            <!-- Table -->
+            <div style="overflow-x:auto;">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID Pedido</th>
+                            <th>Cliente</th>
+                            <th>Productos</th>
+                            <th>Total</th>
+                            <th>Fecha</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaPedidos">
+                        <tr>
+                            <td colspan="6" style="text-align:center;color:var(--text3);padding:40px;">
+                                <i class="fas fa-spinner fa-spin" style="margin-right:6px;"></i>Cargando...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div><!-- /admin-card -->
+
+    </div><!-- /content -->
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/dashboard.js"></script>
+</body>
+</html>

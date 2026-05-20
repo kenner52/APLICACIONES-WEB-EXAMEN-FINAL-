@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Abrir pagina web",
+            "file": "${workspaceFolder}/index.html",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Abrir dashboard",
+            "file": "${workspaceFolder}/DASHBOARD/home.html",
+            "webRoot": "${workspaceFolder}"
+        }
+    ]
+}

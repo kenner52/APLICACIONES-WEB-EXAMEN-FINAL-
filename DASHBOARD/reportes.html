@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes — MOTO PRO Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<!-- ==================== SIDEBAR ==================== -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo" style="justify-content:center;">
+        <img src="../fotos/logo.png" alt="MOTO PRO" style="height:48px;width:auto;object-fit:contain;">
+    </div>
+    <nav class="sidebar-nav">
+        <div class="sidebar-section">Principal</div>
+        <a href="home.html"><i class="fas fa-chart-pie"></i> Dashboard</a>
+        <a href="citas.html"><i class="fas fa-calendar-alt"></i> Citas</a>
+        <a href="pedidos.html"><i class="fas fa-shopping-cart"></i> Pedidos</a>
+        <a href="usuarios.html"><i class="fas fa-users"></i> Usuarios</a>
+        <a href="inventario.html"><i class="fas fa-warehouse"></i> Inventario</a>
+        <div class="sidebar-section">Análisis</div>
+        <a href="reportes.html" class="active"><i class="fas fa-chart-bar"></i> Reportes</a>
+        <div class="sidebar-section">Sistema</div>
+        <a href="configuracion.html"><i class="fas fa-cog"></i> Configuración</a>
+    </nav>
+    <div class="sidebar-footer">
+        <a href="#" onclick="adminLogout()">
+            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+        </a>
+    </div>
+</aside>
+
+<!-- ==================== MAIN ==================== -->
+<main class="main" id="mainContent">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+        <div class="topbar-left">
+            <button class="sidebar-toggle" onclick="toggleSidebar()" title="Menú">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div>
+                <h2>Reportes</h2>
+                <div class="breadcrumb">Admin / <span>Reportes</span></div>
+            </div>
+        </div>
+        <div class="topbar-right">
+            <div class="notif-wrap" id="notifWrap">
+                <button class="topbar-badge" id="notifBtn" onclick="toggleNotifs()" title="Notificaciones">
+                    <i class="fas fa-bell"></i>
+                    <span class="notif-dot" id="notifDot" style="display:none;"></span>
+                </button>
+                <div class="notif-panel" id="notifPanel">
+                    <div class="notif-header"><strong>Notificaciones</strong></div>
+                    <div id="notifLista">
+                        <p style="color:var(--text3);padding:20px 18px;text-align:center;font-size:13px;">
+                            Sin notificaciones nuevas
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-avatar-wrap" style="position:relative;">
+                <div class="admin-avatar" title="Kenner — Admin" onclick="toggleAvatarMenu()" style="cursor:pointer;">K</div>
+                <div id="avatarMenu" class="avatar-menu">
+                    <div class="avatar-menu-header">Administrador</div>
+                    <a href="configuracion.html"><i class="fas fa-cog" style="color:var(--primary);"></i> Configuración</a>
+                    <a href="#" onclick="adminLogout()" class="danger"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+        <!-- Welcome -->
+        <div style="margin-bottom:22px;">
+            <h1 style="font-family:'Varela Round',sans-serif;font-size:18px;font-weight:700;color:var(--text);margin-bottom:4px;">
+                Análisis y Reportes
+            </h1>
+            <p style="color:var(--text3);font-size:13px;">
+                Estadísticas del mes actual · MOTO PRO Cartagena
+            </p>
+        </div>
+
+        <!-- ===== STAT CARDS DEL MES ===== -->
+        <div class="stats-grid" style="margin-bottom:24px;">
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <label>Citas este mes</label>
+                    <div class="stat-icono primary"><i class="fas fa-calendar-check"></i></div>
+                </div>
+                <div class="stat-valor" id="repCitasMes">0</div>
+                <div class="stat-sub">Agendadas este mes</div>
+                <div class="stat-change up"><i class="fas fa-arrow-up"></i> Actualizado
+                    <span>en tiempo real</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <label>Pedidos este mes</label>
+                    <div class="stat-icono verde"><i class="fas fa-shopping-bag"></i></div>
+                </div>
+                <div class="stat-valor" id="repPedidosMes">0</div>
+                <div class="stat-sub">Órdenes del mes</div>
+                <div class="stat-change up"><i class="fas fa-arrow-up"></i> Actualizado
+                    <span>en tiempo real</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <label>Ingresos este mes</label>
+                    <div class="stat-icono azul"><i class="fas fa-dollar-sign"></i></div>
+                </div>
+                <div class="stat-valor" id="repIngresosMes" style="font-size:1.3rem;">COP 0</div>
+                <div class="stat-sub">Ventas del mes</div>
+                <div class="stat-change up"><i class="fas fa-arrow-up"></i> Actualizado
+                    <span>en tiempo real</span>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <label>Técnico más activo</label>
+                    <div class="stat-icono naranja"><i class="fas fa-user-cog"></i></div>
+                </div>
+                <div class="stat-valor" id="repTecnico" style="font-size:1rem;line-height:1.3;">—</div>
+                <div class="stat-sub">Más citas asignadas</div>
+                <div class="stat-change up"><i class="fas fa-star"></i> Top
+                    <span>técnico del mes</span>
+                </div>
+            </div>
+
+        </div><!-- /stats-grid -->
+
+        <!-- ===== CHARTS GRID 2x2 ===== -->
+        <div class="grid-2-equal" style="margin-bottom:24px;">
+
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h3><i class="fas fa-chart-line"></i> Citas por Mes</h3>
+                    <span style="font-size:11px;color:var(--text3);">Año actual</span>
+                </div>
+                <div class="admin-card-body" style="padding:16px 22px 20px;">
+                    <canvas id="repGraficaCitas" height="180"></canvas>
+                </div>
+            </div>
+
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h3><i class="fas fa-chart-area"></i> Ingresos por Mes</h3>
+                    <span style="font-size:11px;color:var(--text3);">Año actual</span>
+                </div>
+                <div class="admin-card-body" style="padding:16px 22px 20px;">
+                    <canvas id="repGraficaIngresos" height="180"></canvas>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="grid-2-equal">
+
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h3><i class="fas fa-user-cog"></i> Citas por Técnico</h3>
+                </div>
+                <div class="admin-card-body" style="padding:16px 22px 20px;">
+                    <canvas id="repGraficaTecnicos" height="180"></canvas>
+                </div>
+            </div>
+
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h3><i class="fas fa-clock"></i> Horarios más solicitados</h3>
+                </div>
+                <div class="admin-card-body" style="padding:16px 22px 20px;">
+                    <canvas id="repGraficaHorarios" height="180"></canvas>
+                </div>
+            </div>
+
+        </div>
+
+    </div><!-- /content -->
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/dashboard.js"></script>
+</body>
+</html>

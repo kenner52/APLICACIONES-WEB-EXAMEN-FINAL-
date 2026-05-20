@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOTO PRO | Taller de Motos Cartagena</title>
+    <meta name="description" content="MOTO PRO - El mejor taller de motos en Cartagena, Colombia. Repuestos originales, mantenimiento, frenos, transmisión, suspensión y más. ¡Agenda tu cita online!">
+    <meta name="keywords" content="taller motos Cartagena, repuestos motos Colombia, mecánico motos Cartagena, MOTO PRO">
+    <meta name="author" content="MOTO PRO Cartagena">
+    <meta property="og:title" content="MOTO PRO | Taller de Motos Cartagena">
+    <meta property="og:description" content="El mejor taller de motos en Cartagena. Repuestos originales y servicio profesional.">
+    <meta property="og:image" content="fotos/logo.png">
+    <link rel="icon" type="image/png" href="fotos/logo.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-contenedor">
+            <a href="#" class="logo" onclick="irAHome(); return false;">
+                <img src="fotos/logo.png" alt="MOTO PRO" style="height:150px; width:auto;">
+            </a>
+            <div style="display:flex; align-items:center; gap:16px; margin-left:auto;">
+                <button class="btn-agendar-nav" onclick="abrirModal('modalAgendar')"><i class="fas fa-calendar-alt"></i> AGENDAR SERVICIO</button>
+                <button class="hamburguesa" id="hamburguesa" onclick="toggleMenu()">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#" onclick="mostrarSeccion('servicios', 'SERVICIOS'); cerrarMenu(); return false;">SERVICIOS</a></li>
+                <li><a href="#" onclick="mostrarSeccion('kits-motor', 'KITS DE MOTOR'); cerrarMenu(); return false;">KITS DE MOTOR</a></li>
+                <li><a href="#" onclick="mostrarSeccion('frenos', 'SISTEMAS DE FRENO'); cerrarMenu(); return false;">SISTEMAS DE FRENO</a></li>
+                <li><a href="#" onclick="mostrarSeccion('transmision', 'TRANSMISIÓN'); cerrarMenu(); return false;">TRANSMISIÓN</a></li>
+                <li><a href="#" onclick="mostrarSeccion('suspension', 'SUSPENSIÓN'); cerrarMenu(); return false;">SUSPENSIÓN</a></li>
+                <li><a href="#" onclick="mostrarSeccion('accesorios', 'ACCESORIOS'); cerrarMenu(); return false;">ACCESORIOS</a></li>
+                <li><a href="#" onclick="mostrarSeccion('catalogo', 'CATÁLOGO GENERAL'); cerrarMenu(); return false;" class="nav-boton">CATÁLOGO GENERAL</a></li>
+            </ul>
+            <div class="nav-iconos">
+                <div class="usuario-nav" id="usuarioNav">
+                    <a href="#" class="icono-login" id="loginBtn" title="Iniciar Sesión">
+                        <i class="fas fa-user"></i>
+                    </a>
+                    <div class="usuario-dropdown" id="usuarioDropdown" style="display:none;">
+                        <div class="usuario-dropdown-nombre" id="usuarioNombreNav"></div>
+                        <a href="#" onclick="abrirModal('modalAgendar'); return false;"><i class="fas fa-calendar-alt"></i> Agendar Cita</a>
+                        <a href="#" onclick="abrirHistorial(); return false;"><i class="fas fa-history"></i> Mi Historial</a>
+                        <a href="#" onclick="cerrarSesion(); return false;"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+                    </div>
+                </div>
+                <a href="#" class="icono-carrito" id="carritoBtn">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="contador-carrito">0</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div id="paginaInicio">
+
+        <section class="hero">
+
+            <div class="carrusel">
+                <div class="carrusel-slide activa">
+                    <img src="fotos/469d0d91-83d7-4fa5-a7a4-3abc37853290.png" alt="Moto 1">
+                </div>
+                <div class="carrusel-slide">
+                    <img src="fotos/7fcb0d7f-4975-48b6-96ab-744b215a78bc.png" alt="Moto 2">
+                </div>
+                <div class="carrusel-slide">
+                    <img src="fotos/a25d0e2c-707e-4e1a-a02a-b54fa0fec3b2.png" alt="Moto 3">
+                </div>
+                <div class="carrusel-slide">
+                    <img src="fotos/49630adf-b36e-4424-ad0e-a03a867ef1b5.png" alt="Moto 4">
+                </div>
+                <div class="carrusel-slide">
+                    <img src="fotos/43630194-d6e2-4b4e-8737-d57094c6f1ec.png" alt="Moto 5">
+                </div>
+            </div>
+
+            <div class="hero-overlay"></div>
+
+            <div class="hero-contenedor">
+                <div class="hero-texto">
+                    <p class="hero-linea1">TALLER ESPECIALIZADO EN MOTOS</p>
+                    <p class="hero-linea2">CARTAGENA - COLOMBIA</p>
+                    <h1 class="hero-titulo">MANTENIMIENTO DE <br><span class="rojo">ALTO RENDIMIENTO</span></h1>
+                    <p class="hero-sub">Repuestos originales · Técnicos certificados · Garantía de servicio</p>
+                    <div class="hero-btns">
+                        <button class="btn-primario" onclick="mostrarSeccion('catalogo', 'CATÁLOGO GENERAL')">
+                            <i class="fas fa-th-large"></i> VER CATÁLOGO
+                        </button>
+                        <button class="btn-secundario" onclick="document.querySelector('.seccion-estadisticas').scrollIntoView({behavior:'smooth'})">
+                            CONOCER MÁS →
+                        </button>
+                    </div>
+                    <div class="hero-badges">
+                        <span><i class="fas fa-box"></i> CAJAS SELLADAS</span>
+                        <span><i class="fas fa-user-shield"></i> BAJO AMIGO SEGURO</span>
+                        <span><i class="fas fa-check-circle"></i> STOCK GARANTIZADO</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="prev" onclick="irASlide(window._slideActual - 1)"><i class="fas fa-arrow-left"></i></button>
+            <button class="next" onclick="irASlide(window._slideActual + 1)"><i class="fas fa-arrow-right"></i></button>
+            <div class="carrusel-puntos">
+                <span class="punto activo" onclick="irASlide(0)"></span>
+                <span class="punto" onclick="irASlide(1)"></span>
+                <span class="punto" onclick="irASlide(2)"></span>
+                <span class="punto" onclick="irASlide(3)"></span>
+                <span class="punto" onclick="irASlide(4)"></span>
+            </div>
+
+        </section>
+
+        <section class="seccion-estadisticas">
+            <div class="contenedor">
+                <div class="stats-grid">
+                    <div class="stat-item animado">
+                        <i class="fas fa-calendar-check"></i>
+                        <div class="stat-numero">10+</div>
+                        <div class="stat-label">Años de Experiencia</div>
+                    </div>
+                    <div class="stat-item animado">
+                        <i class="fas fa-motorcycle"></i>
+                        <div class="stat-numero">500+</div>
+                        <div class="stat-label">Motos Atendidas</div>
+                    </div>
+                    <div class="stat-item animado">
+                        <i class="fas fa-user-cog"></i>
+                        <div class="stat-numero">15</div>
+                        <div class="stat-label">Técnicos Certificados</div>
+                    </div>
+                    <div class="stat-item animado">
+                        <i class="fas fa-star"></i>
+                        <div class="stat-numero">98%</div>
+                        <div class="stat-label">Clientes Satisfechos</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="seccion-home">
+            <div class="contenedor">
+                <h2 class="titulo-seccion">NUESTROS SERVICIOS</h2>
+                <p class="subtitulo-seccion">Haz clic en cualquier categoría para ver todos los productos</p>
+                <div class="categorias-grid">
+
+                    <div class="categoria-card animado" onclick="mostrarSeccion('servicios', 'SERVICIOS')">
+                        <div class="categoria-img">
+                            <img src="https://www.motociclismo.es/uploads/s1/12/31/08/30/mecanico-de-motos.jpeg" alt="Servicios">
+                            <div class="categoria-overlay">
+                                <i class="fas fa-wrench"></i>
+                            </div>
+                        </div>
+                        <div class="categoria-info">
+                            <h3>Servicios</h3>
+                            <p>Cambio de aceite, revisión de frenos, afinación general y más</p>
+                            <span class="categoria-ver">Ver servicios →</span>
+                        </div>
+                    </div>
+
+                    <div class="categoria-card animado" onclick="mostrarSeccion('kits-motor', 'KITS DE MOTOR')">
+                        <div class="categoria-img">
+                            <img src="https://gearcentral.com.mx/wp-content/uploads/image-78.png" alt="Kits de Motor">
+                            <div class="categoria-overlay">
+                                <i class="fas fa-cog"></i>
+                            </div>
+                        </div>
+                        <div class="categoria-info">
+                            <h3>Kits de Motor</h3>
+                            <p>Cilindros, pistones, empaques y kits completos de motor</p>
+                            <span class="categoria-ver">Ver productos →</span>
+                        </div>
+                    </div>
+
+                    <div class="categoria-card animado" onclick="mostrarSeccion('frenos', 'SISTEMAS DE FRENO')">
+                        <div class="categoria-img">
+                            <img src="https://osakaparts.com/wp-content/uploads/2026/01/Instalacion-pastillas-scaled.png" alt="Sistemas de Freno">
+                            <div class="categoria-overlay">
+                                <i class="fas fa-circle-notch"></i>
+                            </div>
+                        </div>
+                        <div class="categoria-info">
+                            <h3>Sistemas de Freno</h3>
+                            <p>Pastillas, discos, calipers y kits de freno de alta calidad</p>
+                            <span class="categoria-ver">Ver productos →</span>
+                        </div>
+                    </div>
+
+                    <div class="categoria-card animado" onclick="mostrarSeccion('transmision', 'TRANSMISIÓN')">
+                        <div class="categoria-img">
+                            <img src="https://http2.mlstatic.com/D_NQ_NP_732512-MCO92247963054_092025-O.webp" alt="Transmisión">
+                            <div class="categoria-overlay">
+                                <i class="fas fa-link"></i>
+                            </div>
+                        </div>
+                        <div class="categoria-info">
+                            <h3>Transmisión</h3>
+                            <p>Cadenas doradas, piñones, coronas y kits de arrastre</p>
+                            <span class="categoria-ver">Ver productos →</span>
+                        </div>
+                    </div>
+
+                    <div class="categoria-card animado" onclick="mostrarSeccion('suspension', 'SUSPENSIÓN')">
+                        <div class="categoria-img">
+                            <img src="https://http2.mlstatic.com/D_NQ_NP_900337-CBT88257251443_072025-O.webp" alt="Suspensión">
+                            <div class="categoria-overlay">
+                                <i class="fas fa-arrows-alt-v"></i>
+                            </div>
+                        </div>
+                        <div class="categoria-info">
+                            <h3>Suspensión</h3>
+                            <p>Barras delanteras, amortiguadores traseros y retenes</p>
+                            <span class="categoria-ver">Ver productos →</span>
+                        </div>
+                    </div>
+
+                    <div class="categoria-card animado" onclick="mostrarSeccion('accesorios', 'ACCESORIOS')">
+                        <div class="categoria-img">
+                            <img src="https://motorepuestoscalleblancos.com/cdn/shop/collections/moto_1200x1200.jpg?v=1683567069" alt="Accesorios">
+                            <div class="categoria-overlay">
+                                <i class="fas fa-toolbox"></i>
+                            </div>
+                        </div>
+                        <div class="categoria-info">
+                            <h3>Accesorios</h3>
+                            <p>Filtros de aceite, filtros de aire, tensores y mucho más</p>
+                            <span class="categoria-ver">Ver productos →</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section class="seccion-home fondo-oscuro">
+            <div class="contenedor">
+                <h2 class="titulo-seccion">¿POR QUÉ ELEGIRNOS?</h2>
+                <p class="subtitulo-seccion">Somos el taller de confianza para tu moto en Cartagena</p>
+                <div class="por-que-grid">
+                    <div class="por-que-card animado">
+                        <div class="por-que-icono">
+                            <i class="fas fa-user-cog"></i>
+                        </div>
+                        <h3>Técnicos Certificados</h3>
+                        <p>Todo nuestro equipo tiene certificación oficial en mecánica de motos de alta cilindrada y urbanas.</p>
+                    </div>
+                    <div class="por-que-card animado">
+                        <div class="por-que-icono">
+                            <i class="fas fa-award"></i>
+                        </div>
+                        <h3>Repuestos Originales</h3>
+                        <p>Trabajamos solo con repuestos originales y de marcas reconocidas. Sin partes de baja calidad.</p>
+                    </div>
+                    <div class="por-que-card animado">
+                        <div class="por-que-icono">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Garantía de Servicio</h3>
+                        <p>Todos nuestros trabajos tienen garantía. Si algo falla después del servicio, lo resolvemos sin costo.</p>
+                    </div>
+                    <div class="por-que-card animado">
+                        <div class="por-que-icono">
+                            <i class="fas fa-tag"></i>
+                        </div>
+                        <h3>Precios Competitivos</h3>
+                        <p>Ofrecemos los mejores precios del mercado sin sacrificar calidad. Transparencia total en cada cobro.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="seccion-home">
+            <div class="contenedor">
+                <h2 class="titulo-seccion">¿CÓMO FUNCIONA NUESTRO TALLER?</h2>
+                <p class="subtitulo-seccion">Tres pasos sencillos para tener tu moto lista</p>
+                <div class="pasos-grid">
+                    <div class="paso-item animado">
+                        <div class="paso-numero">01</div>
+                        <div class="paso-icono"><i class="fas fa-calendar-alt"></i></div>
+                        <h3>Agenda tu Cita</h3>
+                        <p>Llámanos, escríbenos por WhatsApp o usa nuestra plataforma de agendamiento en línea.</p>
+                    </div>
+                    <div class="paso-flecha"><i class="fas fa-chevron-right"></i></div>
+                    <div class="paso-item animado">
+                        <div class="paso-numero">02</div>
+                        <div class="paso-icono"><i class="fas fa-search"></i></div>
+                        <h3>Diagnóstico Gratis</h3>
+                        <p>Evaluamos el estado de tu moto sin costo. Te explicamos qué necesita y cuánto vale.</p>
+                    </div>
+                    <div class="paso-flecha"><i class="fas fa-chevron-right"></i></div>
+                    <div class="paso-item animado">
+                        <div class="paso-numero">03</div>
+                        <div class="paso-icono"><i class="fas fa-motorcycle"></i></div>
+                        <h3>Recibe tu Moto</h3>
+                        <p>Entregamos tu moto en perfectas condiciones con informe completo del servicio realizado.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="seccion-home fondo-oscuro">
+            <div class="contenedor">
+                <h2 class="titulo-seccion">LO QUE DICEN NUESTROS CLIENTES</h2>
+                <p class="subtitulo-seccion">La confianza de nuestros clientes es nuestro mayor logro</p>
+                <div class="testimonios-grid">
+                    <div class="testimonio-card animado">
+                        <div class="estrellas">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <p class="testimonio-texto">"Excelente servicio. Llevé mi Yamaha R1 para afinación general y quedó perfecta. Los técnicos son muy profesionales y honestos con los precios."</p>
+                        <div class="testimonio-autor">
+                            <div class="testimonio-avatar"><i class="fas fa-user"></i></div>
+                            <div>
+                                <strong>Juan Pérez</strong>
+                                <span>Yamaha R1 - Cartagena</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonio-card animado">
+                        <div class="estrellas">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <p class="testimonio-texto">"Llevé mi Honda CBR para cambio de frenos y kit de transmisión. El trabajo fue impecable y entregaron antes de lo prometido. 100% recomendados."</p>
+                        <div class="testimonio-autor">
+                            <div class="testimonio-avatar"><i class="fas fa-user"></i></div>
+                            <div>
+                                <strong>María García</strong>
+                                <span>Honda CBR - Cartagena</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonio-card animado">
+                        <div class="estrellas">
+                            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+                        </div>
+                        <p class="testimonio-texto">"El mejor taller de motos de la ciudad. Llevan 3 años atendiendo mis motos y nunca me han fallado. Los precios son justos y los repuestos son originales."</p>
+                        <div class="testimonio-autor">
+                            <div class="testimonio-avatar"><i class="fas fa-user"></i></div>
+                            <div>
+                                <strong>Carlos Mendoza</strong>
+                                <span>KTM Duke - Cartagena</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="seccion-home">
+            <div class="contenedor">
+                <h2 class="titulo-seccion">QUIÉNES SOMOS</h2>
+                <p class="subtitulo-seccion">Más de 10 años siendo el taller de confianza en Cartagena</p>
+                <div class="nosotros-grid">
+                    <div class="nosotros-texto">
+                        <p>En <strong>MOTO PRO</strong> somos apasionados por las motos. Nuestro taller nació en 2014 con el sueño de ofrecer un servicio técnico de calidad a precios justos en la ciudad de Cartagena.</p>
+                        <p>Contamos con técnicos certificados y equipos de diagnóstico de última tecnología para atender todo tipo de motos: deportivas, urbanas, de trabajo y más.</p>
+                        <div class="nosotros-stats">
+                            <div class="nstat"><span>+500</span><small>Clientes satisfechos</small></div>
+                            <div class="nstat"><span>10+</span><small>Años de experiencia</small></div>
+                            <div class="nstat"><span>3</span><small>Técnicos certificados</small></div>
+                            <div class="nstat"><span>100%</span><small>Repuestos originales</small></div>
+                        </div>
+                    </div>
+                    <div class="nosotros-imagen">
+                        <img src="fotos/7fcb0d7f-4975-48b6-96ab-744b215a78bc.png" alt="Taller MOTO PRO Cartagena">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="seccion-home fondo-oscuro">
+            <div class="contenedor">
+                <h2 class="titulo-seccion">ENCUÉNTRANOS</h2>
+                <p class="subtitulo-seccion">Av. Pedro de Heredia #35-12, Cartagena, Bolívar</p>
+                <div class="mapa-contenedor">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62778.51!2d-75.5133!3d10.3910!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8ef62f6f1f07aab5%3A0xb7e93687c1c2cef6!2sCartagena%2C%20Bol%C3%ADvar!5e0!3m2!1ses!2sco!4v1" width="100%" height="400" style="border:0; border-radius:12px;" allowfullscreen="" loading="lazy"></iframe>
+                </div>
+                <div class="mapa-info">
+                    <div class="mapa-dato"><i class="fas fa-map-marker-alt"></i><div><strong>Dirección</strong><span>Av. Pedro de Heredia #35-12, Cartagena</span></div></div>
+                    <div class="mapa-dato"><i class="fas fa-clock"></i><div><strong>Horario</strong><span>Lun - Sáb: 8:00am - 6:00pm</span></div></div>
+                    <div class="mapa-dato"><i class="fas fa-phone"></i><div><strong>Teléfono</strong><span>+57 311 387 4894</span></div></div>
+                    <div class="mapa-dato"><i class="fab fa-whatsapp"></i><div><strong>WhatsApp</strong><span>+57 311 387 4894</span></div></div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <div id="paginaSeccion" style="display:none;">
+
+        <div class="breadcrumb">
+            <a href="#" onclick="irAHome(); return false;"><i class="fas fa-home"></i> Inicio</a>
+            <span> / </span>
+            <span id="nombreSeccion">Sección</span>
+        </div>
+
+        <section id="servicios" class="seccion-pagina" style="display:none;">
+            <div class="banner-seccion" style="background-image: url('https://www.motociclismo.es/uploads/s1/12/31/08/30/mecanico-de-motos.jpeg')">
+                <div class="banner-seccion-overlay">
+                    <h1><i class="fas fa-wrench"></i> SERVICIOS</h1>
+                    <p>Mantenimiento profesional para tu moto</p>
+                </div>
+            </div>
+            <div class="contenedor" style="padding: 50px 20px;">
+                <div class="grid-productos" id="grid-servicios">
+                    <div class="tarjeta-producto animado">
+                        <img src="https://lubricants.repsol.com/content/dam/repsol-lubricantes/es/noticias/post-cambio-aceite-moto-2.jpeg" alt="Cambio de Aceite">
+                        <h3>Cambio de Aceite Premium</h3>
+                        <p class="precio">COP 80.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://motor.elpais.com/wp-content/uploads/2019/09/Frenos.jpg" alt="Revisión de Frenos">
+                        <h3>Revisión de Frenos</h3>
+                        <p class="precio">COP 60.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://img.freepik.com/foto-gratis/hombre-reparando-motocicleta-taller-moderno_158595-8129.jpg?semt=ais_hybrid&w=740&q=80" alt="Afinación General">
+                        <h3>Afinación General</h3>
+                        <p class="precio">COP 150.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://www.marketresearchintellect.com/images/blogs/top-motorcycle-drive-chains.webp" alt="Ajuste de Cadena">
+                        <h3>Ajuste de Cadena</h3>
+                        <p class="precio">COP 40.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://1800baterias.com/wp-content/uploads/2025/10/6a2bde78-9c5f-4818-bfa1-1c11e257bd08.jpeg" alt="Revisión Eléctrica">
+                        <h3>Revisión Eléctrica</h3>
+                        <p class="precio">COP 70.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://cdn.shopify.com/s/files/1/0719/0275/7037/files/Como-cambiar-la-rueda-de-una-moto.jpg" alt="Cambio de Llantas">
+                        <h3>Cambio de Llantas</h3>
+                        <p class="precio">COP 50.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://bxrepsol.s3.eu-west-1.amazonaws.com/static/2022/08/09125607/esponja-cargada-de-agua-jabonosa-1024x576.jpg" alt="Lavado y Desengrase">
+                        <h3>Lavado y Desengrase</h3>
+                        <p class="precio">COP 35.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://ingemotor.com/wp-content/uploads/2024/11/disgnostico-automotriz-ingemotor.webp" alt="Diagnóstico Computarizado">
+                        <h3>Diagnóstico Computarizado</h3>
+                        <p class="precio">COP 90.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://www.motociclismo.es/uploads/s1/10/99/32/53/istock-1388220942-1.jpeg" alt="Limpieza de Carburador">
+                        <h3>Limpieza de Carburador</h3>
+                        <p class="precio">COP 65.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://recambiosloeches.com/wp-content/uploads/2023/11/cambio-bateria-coche.jpeg" alt="Cambio de Batería">
+                        <h3>Cambio de Batería</h3>
+                        <p class="precio">COP 45.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="kits-motor" class="seccion-pagina" style="display:none;">
+            <div class="banner-seccion" style="background-image: url('https://gearcentral.com.mx/wp-content/uploads/image-78.png')">
+                <div class="banner-seccion-overlay">
+                    <h1><i class="fas fa-cog"></i> KITS DE MOTOR</h1>
+                    <p>Repuestos originales de alta calidad para el corazón de tu moto</p>
+                </div>
+            </div>
+            <div class="contenedor" style="padding: 50px 20px;">
+                <div class="grid-productos" id="grid-kits-motor">
+                    <div class="tarjeta-producto animado">
+                        <img src="https://http2.mlstatic.com/D_NQ_NP_885889-MCO78992740736_092024-O.webp" alt="Cilindro Kit de Motor">
+                        <h3>Cilindro Kit de Motor</h3>
+                        <p class="precio">COP 125.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://www.starspartaindonesia.com/~img/piston_set-68b0b-3285_227-twebp80.webp" alt="Kit de Pistón">
+                        <h3>Kit de Pistón</h3>
+                        <p class="precio">COP 80.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://www.itservitec.com.co/web/image/product.product/46797/image_1024/%5BX49463-82%5D%20Kit%20empaques%20-%20Taylor%20Freezer?unique=b189314" alt="Kit de Empaques">
+                        <h3>Kit de Empaques</h3>
+                        <p class="precio">COP 80.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://image.made-in-china.com/202f0j00LoikTheBknbJ/OEM-Complete-Engine-50cc-60cc-80cc-100cc-110cc-2-Stroke-Pocket-Bike-Complete-Engine.webp" alt="Kit Motor Completo">
+                        <h3>Kit Motor Completo</h3>
+                        <p class="precio">COP 180.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://i0.wp.com/www.redd.es/wp-content/uploads/2019/10/NGK_03.jpg?resize=1080%2C720" alt="Bujías">
+                        <h3>Bujías de Alto Rendimiento</h3>
+                        <p class="precio">COP 35.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://tm.parts/media/image/36164/kit-valvulas-escapeadmissao.jpg" alt="Kit de Válvulas">
+                        <h3>Kit de Válvulas Motor</h3>
+                        <p class="precio">COP 95.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://bxrepsol.s3.eu-west-1.amazonaws.com/static/2025/12/18073446/Diseno-sin-titulo-2025-12-18T103441.478.png" alt="Árbol de Levas">
+                        <h3>Árbol de Levas</h3>
+                        <p class="precio">COP 145.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://cdn.club-magazin.autodoc.de/uploads/sites/11/2020/12/que-es-el-ciguenal.jpg" alt="Cigüeñal">
+                        <h3>Cigüeñal</h3>
+                        <p class="precio">COP 220.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="frenos" class="seccion-pagina" style="display:none;">
+            <div class="banner-seccion" style="background-image: url('https://www.cuidamostumoto.com/sites/default/files/portada_14.jpg')">
+                <div class="banner-seccion-overlay">
+                    <h1><i class="fas fa-circle-notch"></i> SISTEMAS DE FRENO</h1>
+                    <p>Seguridad y rendimiento en cada frenada</p>
+                </div>
+            </div>
+            <div class="contenedor" style="padding: 50px 20px;">
+                <div class="grid-productos" id="grid-frenos">
+                    <div class="tarjeta-producto animado">
+                        <img src="https://gxmotor.co/cdn/shop/files/825297_a76f0cc3-ade4-418a-8015-69eaac1b095a.jpg?v=1715802090&width=1000" alt="Pastillas de Freno">
+                        <h3>Pastillas de Freno Delanteras</h3>
+                        <p class="precio">COP 125.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://http2.mlstatic.com/D_NQ_NP_925193-MCO94356219577_102025-O.webp" alt="Pastillas Wave">
+                        <h3>Pastillas de Freno Wave</h3>
+                        <p class="precio">COP 25.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://static.retail.autofact.cl/blog/c_url_original.9q2tg8lyq0dwzq.jpg" alt="Disco de Freno">
+                        <h3>Disco de Freno Wave</h3>
+                        <p class="precio">COP 35.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://api-rustoleum.s3.us-east-1.amazonaws.com/product-images/5e9db6ee857bb_automotivecaliper2.jpg" alt="Caliper de Freno">
+                        <h3>Caliper de Freno Delantero</h3>
+                        <p class="precio">COP 230.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://http2.mlstatic.com/D_NQ_NP_605059-MCO74373273717_022024-O.webp" alt="Kit de Pastillas">
+                        <h3>Kit de Pastillas Dreno</h3>
+                        <p class="precio">COP 55.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://media.falabella.com/sodimacCO/334838/public" alt="Líquido de Frenos">
+                        <h3>Líquido de Frenos DOT4</h3>
+                        <p class="precio">COP 28.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="transmision" class="seccion-pagina" style="display:none;">
+            <div class="banner-seccion" style="background-image: url('https://http2.mlstatic.com/D_NQ_NP_732512-MCO92247963054_092025-O.webp')">
+                <div class="banner-seccion-overlay">
+                    <h1><i class="fas fa-link"></i> TRANSMISIÓN</h1>
+                    <p>Cadenas, piñones y kits completos de arrastre</p>
+                </div>
+            </div>
+            <div class="contenedor" style="padding: 50px 20px;">
+                <div class="grid-productos" id="grid-transmision">
+                    <div class="tarjeta-producto animado">
+                        <img src="https://http2.mlstatic.com/D_NQ_NP_732512-MCO92247963054_092025-O.webp" alt="Cadena Dorada S20">
+                        <h3>Cadena Dorada S20</h3>
+                        <p class="precio">COP 125.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://http2.mlstatic.com/D_NQ_NP_2X_818377-MCO90070402377_082025-T.webp" alt="Cadena Reforzada">
+                        <h3>Cadena Reforzada Wave</h3>
+                        <p class="precio">COP 120.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://gxmotor.co/cdn/shop/files/5002.jpg?v=1757363001" alt="Piñón">
+                        <h3>Piñón de Salida 15 Dientes</h3>
+                        <p class="precio">COP 122.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://hersal.com.pe/web/wp-content/uploads/2021/06/hersal_productos_cadenas_de_transmision_3_960x480.jpg" alt="Cadena de Transmisión">
+                        <h3>Cadena de Transmisión</h3>
+                        <p class="precio">COP 120.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://www.kitdearrastre.com/298585-large_default/kit-de-arrastre-ducati-strada-851-biposto-90-92-reforzado-hypersport.jpg" alt="Kit de Transmisión">
+                        <h3>Kit de Transmisión Reforzado</h3>
+                        <p class="precio">COP 160.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://http2.mlstatic.com/D_Q_NP_2X_743082-MCO100396827268_122025-P.webp" alt="Tensor de Cadena">
+                        <h3>Tensor de Cadena Manual</h3>
+                        <p class="precio">COP 135.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="suspension" class="seccion-pagina" style="display:none;">
+            <div class="banner-seccion" style="background-image: url('https://http2.mlstatic.com/D_NQ_NP_900337-CBT88257251443_072025-O.webp')">
+                <div class="banner-seccion-overlay">
+                    <h1><i class="fas fa-arrows-alt-v"></i> SUSPENSIÓN</h1>
+                    <p>Barras, amortiguadores y retenes de alta durabilidad</p>
+                </div>
+            </div>
+            <div class="contenedor" style="padding: 50px 20px;">
+                <div class="grid-productos grid-4" id="grid-suspension">
+                    <div class="tarjeta-producto animado">
+                        <img src="https://gxmotor.co/cdn/shop/files/63031-1.jpg?v=1715891824&width=1000" alt="Barras Delanteras">
+                        <h3>Barras Delanteras Cónicas</h3>
+                        <p class="precio">COP 125.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://media.partseurope.eu/parts/e01cc7e23981e90a11e5f8cad113e080.webp" alt="Kit Retenes">
+                        <h3>Kit Retenes Cónicos</h3>
+                        <p class="precio">COP 45.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://gxmotor.co/cdn/shop/files/826228_1.jpg?v=1740494222" alt="Amortiguador Trasero">
+                        <h3>Amortiguador Trasero</h3>
+                        <p class="precio">COP 250.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://http2.mlstatic.com/D_NQ_NP_962123-MCO88219789462_072025-O.webp" alt="Retenes Suspensión">
+                        <h3>Retenes de Suspensión</h3>
+                        <p class="precio">COP 25.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="accesorios" class="seccion-pagina" style="display:none;">
+            <div class="banner-seccion" style="background-image: url('https://i0.wp.com/www.redd.es/wp-content/uploads/2020/06/K_N-Oil-Filters.jpg?resize=1080%2C719')">
+                <div class="banner-seccion-overlay">
+                    <h1><i class="fas fa-toolbox"></i> ACCESORIOS</h1>
+                    <p>Filtros, tensores, espejos y todo lo que necesita tu moto</p>
+                </div>
+            </div>
+            <div class="contenedor" style="padding: 50px 20px;">
+                <div class="grid-productos" id="grid-accesorios">
+                    <div class="tarjeta-producto animado">
+                        <img src="https://http2.mlstatic.com/D_Q_NP_2X_853529-MCO31545897424_072019-P.webp" alt="Filtro de Aceite">
+                        <h3>Filtro de Aceite Oroilite</h3>
+                        <p class="precio">COP 35.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://http2.mlstatic.com/D_NQ_NP_2X_601697-MCO90984879572_082025-T.webp" alt="Filtro de Aire">
+                        <h3>Filtro de Aire DNA CRP-168</h3>
+                        <p class="precio">COP 135.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://img.tpl.one/w/extra/products/DNA/OL-2100_1.jpg" alt="Filtro DNA S58">
+                        <h3>Filtro de Aceite DNA S58</h3>
+                        <p class="precio">COP 125.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://http2.mlstatic.com/D_NQ_NP_707594-MCO98511807670_112025-O.webp" alt="Espejo Retrovisor">
+                        <h3>Espejo Retrovisor Universal</h3>
+                        <p class="precio">COP 45.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                    <div class="tarjeta-producto animado">
+                        <img src="https://http2.mlstatic.com/D_NQ_NP_756504-MLU71977898377_092023-O.webp" alt="Puños de Manubrio">
+                        <h3>Puños de Manubrio Sport</h3>
+                        <p class="precio">COP 30.000</p>
+                        <button class="boton-carrito" onclick="agregarCarrito(this)">Añadir al Carrito</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="catalogo" class="seccion-pagina" style="display:none;">
+            <div class="banner-seccion" style="background-image: url('https://motorepuestoscalleblancos.com/cdn/shop/collections/moto_1200x1200.jpg?v=1683567069')">
+                <div class="banner-seccion-overlay">
+                    <h1><i class="fas fa-list"></i> CATÁLOGO GENERAL</h1>
+                    <p>Todos los repuestos y servicios en un solo lugar</p>
+                </div>
+            </div>
+            <div class="contenedor" style="padding: 50px 20px;">
+                <div class="catalogo-buscador">
+                    <div class="buscador-input">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="buscadorCatalogo" placeholder="Buscar producto o servicio..." oninput="filtrarCatalogo()">
+                    </div>
+                    <div class="filtros-categoria">
+                        <button class="filtro-btn activo" onclick="filtrarPorCategoria('todos', this)">Todos</button>
+                        <button class="filtro-btn" onclick="filtrarPorCategoria('servicios', this)">Servicios</button>
+                        <button class="filtro-btn" onclick="filtrarPorCategoria('motor', this)">Motor</button>
+                        <button class="filtro-btn" onclick="filtrarPorCategoria('frenos', this)">Frenos</button>
+                        <button class="filtro-btn" onclick="filtrarPorCategoria('transmision', this)">Transmisión</button>
+                        <button class="filtro-btn" onclick="filtrarPorCategoria('suspension', this)">Suspensión</button>
+                        <button class="filtro-btn" onclick="filtrarPorCategoria('accesorios', this)">Accesorios</button>
+                    </div>
+                    <div class="filtros-precio">
+                        <span>Precio:</span>
+                        <button class="filtro-btn activo" onclick="filtrarPorPrecio(0, 999999, this)">Todos</button>
+                        <button class="filtro-btn" onclick="filtrarPorPrecio(0, 50000, this)">Hasta $50k</button>
+                        <button class="filtro-btn" onclick="filtrarPorPrecio(50000, 150000, this)">$50k - $150k</button>
+                        <button class="filtro-btn" onclick="filtrarPorPrecio(150000, 999999, this)">Más de $150k</button>
+                    </div>
+                </div>
+                                <p id="sinResultados" style="display:none; text-align:center; color:#888; padding:40px;">No se encontraron productos.</p>
+                <div id="catalogo-dinamico" style="padding-bottom:20px;">
+                    <div style="text-align:center;padding:40px;color:#888;"><i class="fas fa-spinner fa-spin"></i> Cargando catálogo...</div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer class="footer">
+        <div class="footer-contenedor">
+            <div class="footer-col">
+                <h4>SITIO MAPA</h4>
+                <ul>
+                    <li><a href="#" onclick="mostrarSeccion('servicios','SERVICIOS');return false;">Servicios</a></li>
+                    <li><a href="#" onclick="mostrarSeccion('kits-motor','KITS DE MOTOR');return false;">Kits de Motor</a></li>
+                    <li><a href="#" onclick="mostrarSeccion('frenos','SISTEMAS DE FRENO');return false;">Sistemas de Freno</a></li>
+                    <li><a href="#" onclick="mostrarSeccion('transmision','TRANSMISIÓN');return false;">Transmisión</a></li>
+                    <li><a href="#" onclick="mostrarSeccion('suspension','SUSPENSIÓN');return false;">Suspensión</a></li>
+                    <li><a href="#" onclick="mostrarSeccion('accesorios','ACCESORIOS');return false;">Accesorios</a></li>
+                    <li><a href="#" onclick="mostrarSeccion('catalogo','CATÁLOGO GENERAL');return false;">Catálogo General</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>CONTÁCTANOS</h4>
+                <p><i class="fas fa-map-marker-alt"></i> Av. Pedro de Heredia #35-12, Cartagena, Bolívar</p>
+                <p><i class="fas fa-phone"></i> +57 311 387 4894</p>
+                <p><i class="fas fa-envelope"></i> info@motopro.com.co</p>
+                <p><i class="fas fa-clock"></i> Lun - Sáb: 8am - 6pm</p>
+                <div class="footer-redes">
+                    <a href="https://wa.me/573113874894" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>AGENDA TU CITA</h4>
+                <p style="color:#888; font-size:13px; margin-bottom:16px;">¿Necesitas servicio para tu moto? Agenda en línea o contáctanos.</p>
+                <button class="btn-primario" style="width:100%; margin-bottom:10px;" onclick="abrirModal('modalAgendar')"><i class="fas fa-calendar-alt"></i> AGENDAR SERVICIO</button>
+                <a href="https://wa.me/573113874894?text=Hola%20MOTO%20PRO,%20quiero%20información" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;background:#25D366;color:#fff;padding:12px;border-radius:8px;font-weight:700;font-size:14px;text-decoration:none;"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+            </div>
+        </div>
+        <div class="footer-fondo">
+            <p>&copy; 2024 MOTO PRO. Todos los derechos reservados.</p>
+            <div><a href="#" onclick="abrirModal('modalPrivacidad'); return false;">Términos y Condiciones</a> | <a href="#" onclick="abrirModal('modalPrivacidad'); return false;">Política de Privacidad</a></div>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/573113874894?text=Hola%20MOTO%20PRO,%20quiero%20información%20sobre%20sus%20servicios" class="boton-whatsapp" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+        <span class="whatsapp-texto">¿Necesitas ayuda?</span>
+    </a>
+
+    <div id="modalLogin" class="modal">
+        <div class="modal-contenido modal-login-pequeño">
+            <span class="cerrar-modal" onclick="cerrarModal('modalLogin')">&times;</span>
+
+            <div id="loginPaso1">
+                <h3 class="login-titulo">Escoja una opción para entrar</h3>
+                <div class="login-opciones">
+                    <button class="boton-login boton-rojo-login" onclick="mostrarPasoPassword()">
+                        <i class="fas fa-lock" style="margin-right:8px"></i> ENTRAR CON E-MAIL Y CONTRASEÑA
+                    </button>
+                    <button class="boton-login boton-blanco-login" onclick="loginGoogle()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" style="margin-right:8px"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                        ENTRAR CON GOOGLE
+                    </button>
+                </div>
+            </div>
+
+            <div id="loginPasoPassword" style="display:none;">
+                <button class="boton-volver" onclick="volverPaso1()">← Volver</button>
+                <h3 class="login-titulo" style="margin-top:15px;">Ingresa tus datos</h3>
+                <input type="email" placeholder="Correo electrónico" class="input-login" id="emailUsuario">
+                <input type="password" placeholder="Contraseña" class="input-login" id="passwordUsuario">
+                <button class="boton-login boton-rojo-login" onclick="iniciarSesion()">INGRESAR</button>
+                <p style="text-align:center; color:#666; font-size:13px; margin-top:15px;">
+                    ¿No tienes cuenta? <a href="#" style="color:#e63946;" onclick="mostrarPasoRegistro(); return false;">Regístrate aquí</a>
+                </p>
+            </div>
+
+            <div id="loginPasoRegistro" style="display:none;">
+                <button class="boton-volver" onclick="volverPaso1()">← Volver</button>
+                <h3 class="login-titulo" style="margin-top:15px;">Crear cuenta</h3>
+                <input type="text" placeholder="Nombre completo" class="input-login" id="registroNombre">
+                <input type="email" placeholder="Correo electrónico" class="input-login" id="registroEmail">
+                <input type="password" placeholder="Contraseña (mínimo 4 caracteres)" class="input-login" id="registroPassword">
+                <input type="password" placeholder="Confirmar contraseña" class="input-login" id="registroPassword2">
+                <button class="boton-login boton-rojo-login" onclick="registrarUsuario()">CREAR CUENTA</button>
+                <p style="text-align:center; color:#666; font-size:13px; margin-top:15px;">
+                    ¿Ya tienes cuenta? <a href="#" style="color:#e63946;" onclick="mostrarPasoPassword(); return false;">Inicia sesión</a>
+                </p>
+            </div>
+
+
+        </div>
+    </div>
+
+
+
+    <div id="modalAgendar" class="modal">
+        <div class="modal-contenido" style="max-width:520px;">
+            <span class="cerrar-modal" onclick="cerrarModal('modalAgendar')">&times;</span>
+            <div class="modal-cabecera">
+                <h2>PROGRAMA TU SERVICIO</h2>
+                <div class="perfil-usuario"><div class="avatar-usuario" id="avatarModal"></div><div><div style="font-size:14px;" id="nombreEnModal">Bienvenido</div><a href="#" onclick="cerrarSesion();cerrarModal('modalAgendar');return false;" style="color:#e63946;font-size:12px;">Cerrar Sesión</a></div></div>
+            </div>
+            <div class="agenda-cuerpo">
+                <div class="formulario-cita" style="width:100%;">
+                    <div class="grupo-campo">
+                        <label>Tipo de Mantenimiento</label>
+                        <div style="display:flex;gap:12px;margin-top:8px;">
+                            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:10px 16px;border:1px solid #333;border-radius:8px;flex:1;transition:all .2s;" id="lbl-preventivo" onclick="seleccionarTipoMant('preventivo')">
+                                <input type="radio" name="tipoMant" id="preventivo" value="Preventivo" style="accent-color:#e63946;">
+                                <span><strong style="color:#fff;">Preventivo</strong><br><small style="color:#888;">Mantenimiento rutinario</small></span>
+                            </label>
+                            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:10px 16px;border:1px solid #333;border-radius:8px;flex:1;transition:all .2s;" id="lbl-correctivo" onclick="seleccionarTipoMant('correctivo')">
+                                <input type="radio" name="tipoMant" id="correctivo" value="Correctivo" style="accent-color:#e63946;">
+                                <span><strong style="color:#fff;">Correctivo</strong><br><small style="color:#888;">Reparar un problema</small></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="grupo-campo">
+                        <label>Tu Moto <button type="button" onclick="abrirSelectorMoto()" style="background:none;border:1px solid #e63946;color:#e63946;border-radius:6px;padding:3px 10px;font-size:11px;cursor:pointer;margin-left:8px;"><i class="fas fa-plus"></i> Seleccionar</button></label>
+                        <div id="motoSeleccionada" style="background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:10px 14px;color:#888;font-size:13px;margin-top:6px;">No has seleccionado una moto</div>
+                    </div>
+                    <div class="grupo-campo">
+                        <label>Fecha</label>
+                        <input type="date" id="fechaCita" class="input-fecha">
+                    </div>
+                    <div class="grupo-campo"><label>Hora</label><select id="horaCita"><option>08:00 AM</option><option>09:00 AM</option><option>10:00 AM</option><option>11:00 AM</option><option>12:00 PM</option><option>02:00 PM</option><option>03:00 PM</option><option>04:00 PM</option><option>05:00 PM</option></select></div>
+                    <div class="grupo-campo"><label>Técnico</label><select id="tecnicoCita"><option>Cualquier técnico disponible</option><option>Juan Rodríguez</option><option>Carlos Pérez</option><option>Miguel Torres</option></select></div>
+                    <div class="grupo-campo"><label>Describe el problema de tu moto</label><textarea id="observacionesCita" placeholder="Ej: Hace ruido al frenar, consume más aceite, no enciende bien..." rows="3"></textarea></div>
+                    <button class="boton-confirmar" onclick="confirmarCita()">CONFIRMAR CITA</button>
+                </div>
+            </div>
+
+            <!-- SELECTOR DE MOTO -->
+            <div id="selectorMoto" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:3000; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+                <div style="background:#111; border:1px solid #2a2a2a; border-radius:16px; padding:28px; max-width:600px; width:90%; max-height:80vh; overflow-y:auto;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                        <h3 style="font-family:'Rajdhani',sans-serif;font-size:20px;">SELECCIONA TU MOTO</h3>
+                        <button onclick="cerrarSelectorMoto()" style="background:none;border:none;color:#888;font-size:24px;cursor:pointer;">×</button>
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+                        <div class="moto-btn" onclick="elegirMoto('Yamaha YZF-R1')">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/2015_Yamaha_YZF-R1_crop.JPG" alt="Yamaha YZF-R1" class="moto-btn-img">
+                            <div class="moto-btn-overlay"><span class="moto-marca">YAMAHA</span><span class="moto-modelo">YZF-R1</span><span class="moto-tipo">Deportiva</span></div>
+                        </div>
+                        <div class="moto-btn" onclick="elegirMoto('Yamaha MT-09')">
+                            <img src="fotos/MT-09.webp" alt="Yamaha MT-09" class="moto-btn-img">
+                            <div class="moto-btn-overlay"><span class="moto-marca">YAMAHA</span><span class="moto-modelo">MT-09</span><span class="moto-tipo">Naked</span></div>
+                        </div>
+                        <div class="moto-btn" onclick="elegirMoto('Yamaha FZ 2.0')">
+                            <img src="fotos/FZ 2.0.jpg" alt="Yamaha FZ 2.0" class="moto-btn-img">
+                            <div class="moto-btn-overlay"><span class="moto-marca">YAMAHA</span><span class="moto-modelo">FZ 2.0</span><span class="moto-tipo">Urbana</span></div>
+                        </div>
+                        <div class="moto-btn" onclick="elegirMoto('Honda CBR 600RR')">
+                            <img src="https://images.caradisiac.com/images/8/0/2/0/208020/S0-208020-796165.jpg" alt="Honda CBR 600RR" class="moto-btn-img">
+                            <div class="moto-btn-overlay"><span class="moto-marca">HONDA</span><span class="moto-modelo">CBR 600RR</span><span class="moto-tipo">Deportiva</span></div>
+                        </div>
+                        <div class="moto-btn" onclick="elegirMoto('Honda Wave 110i')">
+                            <img src="fotos/Wave 110.jpg" alt="Honda Wave 110i" class="moto-btn-img">
+                            <div class="moto-btn-overlay"><span class="moto-marca">HONDA</span><span class="moto-modelo">WAVE 110I</span><span class="moto-tipo">Urbana</span></div>
+                        </div>
+                        <div class="moto-btn" onclick="elegirMoto('KTM Duke 390')">
+                            <img src="fotos/duke 390.jpg" alt="KTM Duke 390" class="moto-btn-img">
+                            <div class="moto-btn-overlay"><span class="moto-marca">KTM</span><span class="moto-modelo">DUKE 390</span><span class="moto-tipo">Naked</span></div>
+                        </div>
+                        <div class="moto-btn" onclick="elegirMoto('Kawasaki Ninja 400')">
+                            <img src="fotos/NINJA 400.JPG" alt="Kawasaki Ninja 400" class="moto-btn-img">
+                            <div class="moto-btn-overlay"><span class="moto-marca">KAWASAKI</span><span class="moto-modelo">NINJA 400</span><span class="moto-tipo">Deportiva</span></div>
+                        </div>
+                        <div class="moto-btn" onclick="elegirMoto('Suzuki GSX-R 750')">
+                            <img src="https://i.pinimg.com/1200x/70/5d/90/705d904f6ad8fdd3f6736895788c78bb.jpg" alt="Suzuki GSX-R 750" class="moto-btn-img">
+                            <div class="moto-btn-overlay"><span class="moto-marca">SUZUKI</span><span class="moto-modelo">GSX-R 750</span><span class="moto-tipo">Deportiva</span></div>
+                        </div>
+                        <div class="moto-btn" onclick="elegirMoto('BMW S1000RR')">
+                            <img src="fotos/S1000RR.webp" alt="BMW S1000RR" class="moto-btn-img">
+                            <div class="moto-btn-overlay"><span class="moto-marca">BMW</span><span class="moto-modelo">S1000RR</span><span class="moto-tipo">Deportiva</span></div>
+                        </div>
+                        <div class="moto-btn" onclick="elegirMoto('Bajaj Pulsar NS200')">
+                            <img src="fotos/PULSAR N200.jpg" alt="Bajaj Pulsar NS200" class="moto-btn-img">
+                            <div class="moto-btn-overlay"><span class="moto-marca">BAJAJ</span><span class="moto-modelo">PULSAR NS200</span><span class="moto-tipo">Urbana</span></div>
+                        </div>
+                        <div class="moto-btn" onclick="elegirMoto('AKT TTR 125')">
+                            <img src="fotos/AKT TTR 125.jpg" alt="AKT TTR 125" class="moto-btn-img">
+                            <div class="moto-btn-overlay"><span class="moto-marca">AKT</span><span class="moto-modelo">TTR 125</span><span class="moto-tipo">Trabajo</span></div>
+                        </div>
+                        <div class="moto-btn" onclick="elegirMoto('Auteco Boxer 150')">
+                            <img src="fotos/BOXER BM150.jpg" alt="Auteco Boxer 150" class="moto-btn-img">
+                            <div class="moto-btn-overlay"><span class="moto-marca">AUTECO</span><span class="moto-modelo">BOXER 150</span><span class="moto-tipo">Trabajo</span></div>
+                        </div>
+                    </div>
+                    <div style="margin-top:16px;">
+                        <label style="color:#888;font-size:13px;">¿No está tu moto? Escríbela:</label>
+                        <div style="display:flex;gap:8px;margin-top:8px;">
+                            <input type="text" id="motoPersonalizada" placeholder="Ej: Yamaha FZ 2.0" style="flex:1;background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:10px;color:#fff;font-size:13px;">
+                            <button onclick="elegirMotoPersonalizada()" style="background:#e63946;color:#fff;border:none;border-radius:8px;padding:10px 16px;font-weight:700;cursor:pointer;">Agregar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalPago" class="modal">
+        <div class="modal-contenido">
+            <span class="cerrar-modal" onclick="cerrarModal('modalPago')">&times;</span>
+            <div class="modal-cabecera"><h2>PAGO SEGURO</h2></div>
+            <div class="pago-cuerpo">
+                <div class="pago-izquierda">
+                    <i class="fas fa-shield-alt" style="font-size:70px;color:white;"></i>
+                    <h3>MOTO PRO</h3>
+                    <p style="color:#aaa;font-size:14px;">Pago Seguro Garantizado</p>
+                    <i class="fas fa-lock" style="color:#25D366;font-size:28px;"></i>
+                    <div class="metodos-pago"><div class="metodo-pago">PSE</div><div class="metodo-pago azul">VISA</div><div class="metodo-pago rojo-mc">MC</div></div>
+                </div>
+                <div class="formulario-pago">
+                    <input type="email" placeholder="Correo electrónico (para confirmación)" class="input-pago" id="emailPago">
+                    <input type="text" placeholder="Número de tarjeta" class="input-pago" maxlength="19" oninput="formatarTarjeta(this)">
+                    <div class="fila-inputs"><input type="text" placeholder="MM/AA" class="input-pago" maxlength="5"><input type="text" placeholder="CVV" class="input-pago" maxlength="3"></div>
+                    <input type="text" placeholder="Nombre en la tarjeta" class="input-pago">
+                    <button class="boton-pagar" onclick="procesarPago()">Pagar $200.000</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalCarrito" class="modal">
+        <div class="modal-contenido">
+            <span class="cerrar-modal" onclick="cerrarModal('modalCarrito')">&times;</span>
+            <div class="modal-cabecera"><h2><i class="fas fa-shopping-cart"></i> MI CARRITO</h2></div>
+            <div id="carritoContenido" class="carrito-contenido"><p style="text-align:center;color:#aaa;padding:40px 20px;">Tu carrito está vacío</p></div>
+            <div class="carrito-pie">
+                <strong style="font-size:18px;">Total: <span id="carritoTotal" class="rojo">$0</span></strong>
+                <button class="boton-pagar" onclick="cerrarModal('modalCarrito');abrirModal('modalPago')">Proceder al Pago</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PRIVACIDAD -->
+    <div id="modalPrivacidad" class="modal">
+        <div class="modal-contenido" style="max-width:700px; max-height:80vh; overflow-y:auto;">
+            <div class="modal-cabecera"><strong>📄 Política de Privacidad y Términos</strong><button class="modal-cerrar" onclick="cerrarModal('modalPrivacidad')">×</button></div>
+            <div style="padding:20px; color:#ccc; line-height:1.8; font-size:14px;">
+                <h3 style="color:#e63946; margin-bottom:10px;">MOTO PRO — Política de Privacidad</h3>
+                <p><strong>Última actualización:</strong> Mayo 2026</p>
+                <p>En cumplimiento de la <strong>Ley 1581 de 2012</strong> (Ley de Protección de Datos Personales de Colombia) y el Decreto 1377 de 2013, MOTO PRO informa:</p>
+                <h4 style="color:#fff; margin:16px 0 8px;">1. Responsable del tratamiento</h4>
+                <p>MOTO PRO Cartagena — Av. Pedro de Heredia #35-12, Cartagena, Bolívar. Contacto: +57 311 387 4894</p>
+                <h4 style="color:#fff; margin:16px 0 8px;">2. Datos que recopilamos</h4>
+                <p>Nombre completo, correo electrónico, información de citas y pedidos realizados en nuestra plataforma.</p>
+                <h4 style="color:#fff; margin:16px 0 8px;">3. Finalidad del tratamiento</h4>
+                <p>Gestión de citas, procesamiento de pedidos, envío de confirmaciones y comunicaciones relacionadas con nuestros servicios.</p>
+                <h4 style="color:#fff; margin:16px 0 8px;">4. Derechos del titular</h4>
+                <p>Usted tiene derecho a conocer, actualizar, rectificar y suprimir sus datos personales. Contáctenos a: <strong>info@motopro.com.co</strong></p>
+                <h4 style="color:#fff; margin:16px 0 8px;">5. Seguridad</h4>
+                <p>Sus datos son almacenados de forma segura mediante Supabase con cifrado de extremo a extremo.</p>
+                <h4 style="color:#fff; margin:16px 0 8px;">6. Términos de uso</h4>
+                <p>El uso de esta plataforma implica la aceptación de estos términos. MOTO PRO se reserva el derecho de modificar precios y disponibilidad sin previo aviso.</p>
+                <div style="margin-top:20px; text-align:center;"><button class="boton-confirmar" onclick="cerrarModal('modalPrivacidad')">ENTENDIDO</button></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL HISTORIAL -->
+    <div id="modalHistorial" class="modal">
+        <div class="modal-contenido" style="max-width:750px; max-height:85vh; overflow-y:auto;">
+            <div class="modal-cabecera"><strong>📋 Mi Historial</strong><button class="modal-cerrar" onclick="cerrarModal('modalHistorial')">×</button></div>
+            <div style="padding:20px;">
+                <div style="display:flex; gap:12px; margin-bottom:24px;">
+                    <button class="filtro-btn activo" id="tabCitas" onclick="mostrarTabHistorial('citas')">🗓 Mis Citas</button>
+                    <button class="filtro-btn" id="tabPedidos" onclick="mostrarTabHistorial('pedidos')">🛒 Mis Pedidos</button>
+                </div>
+                <div id="historialCitas"><p style="color:#888; text-align:center; padding:30px;">Cargando citas...</p></div>
+                <div id="historialPedidos" style="display:none;"><p style="color:#888; text-align:center; padding:30px;">Cargando pedidos...</p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DETALLE PRODUCTO ESTILO SHEIN -->
+    <div class="modal" id="modalProducto" style="align-items:center; padding:20px;">
+        <div id="modalProducto-caja" style="background:#111; border-radius:16px; max-width:860px; width:100%; max-height:90vh; overflow-y:auto; position:relative; display:grid; grid-template-columns:1fr 1fr; gap:0;">
+            <!-- CERRAR -->
+            <button onclick="cerrarModal('modalProducto')" style="position:absolute;top:14px;right:16px;z-index:10;background:#222;border:none;color:#fff;font-size:22px;width:36px;height:36px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;">×</button>
+            <!-- IMAGEN -->
+            <div style="background:#1a1a1a; border-radius:16px 0 0 16px; display:flex; align-items:center; justify-content:center; padding:30px; min-height:400px;">
+                <img id="modalProducto-img" src="" alt="" style="max-width:100%; max-height:380px; object-fit:contain; border-radius:10px;">
+            </div>
+            <!-- INFO -->
+            <div style="padding:32px 28px; display:flex; flex-direction:column; justify-content:space-between;">
+                <div>
+                    <p style="font-size:11px; color:#e63946; letter-spacing:2px; font-weight:700; margin-bottom:8px; font-family:'Rajdhani',sans-serif;">MOTO PRO · REPUESTO ORIGINAL</p>
+                    <h2 id="modalProducto-nombre" style="font-family:'Rajdhani',sans-serif; font-size:26px; font-weight:700; margin-bottom:12px; line-height:1.2;"></h2>
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:18px;">
+                        <span id="modalProducto-precio" style="color:#e63946; font-size:28px; font-weight:700; font-family:'Rajdhani',sans-serif;"></span>
+                    </div>
+                    <div style="border-top:1px solid #222; border-bottom:1px solid #222; padding:16px 0; margin-bottom:18px;">
+                        <p style="font-size:12px; color:#888; font-weight:600; letter-spacing:1px; margin-bottom:8px; text-transform:uppercase;">Descripción</p>
+                        <p id="modalProducto-desc" style="color:#bbb; font-size:14px; line-height:1.8;"></p>
+                    </div>
+                    <div style="display:flex; flex-direction:column; gap:8px; font-size:13px; color:#777; margin-bottom:20px;">
+                        <span><i class="fas fa-check-circle" style="color:#e63946;"></i> &nbsp;Stock disponible</span>
+                        <span><i class="fas fa-shield-alt" style="color:#e63946;"></i> &nbsp;Repuesto original garantizado</span>
+                        <span><i class="fas fa-motorcycle" style="color:#e63946;"></i> &nbsp;Instalación disponible en taller</span>
+                    </div>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <button id="modalProducto-btn" style="background:#e63946; color:#fff; border:none; padding:16px; border-radius:10px; font-size:15px; font-weight:700; cursor:pointer; font-family:'Rajdhani',sans-serif; letter-spacing:1px; display:flex; align-items:center; justify-content:center; gap:8px; transition:background 0.2s;">
+                        <i class="fas fa-shopping-cart"></i> AÑADIR AL CARRITO
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="java.js"></script>
+</body>
+</html>

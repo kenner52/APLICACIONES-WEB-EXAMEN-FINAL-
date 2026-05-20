@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — MOTO PRO Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<!-- ==================== SIDEBAR ==================== -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo" style="justify-content:center;">
+        <img src="../fotos/logo.png" alt="MOTO PRO" style="height:48px;width:auto;object-fit:contain;">
+    </div>
+    <nav class="sidebar-nav">
+        <div class="sidebar-section">Principal</div>
+        <a href="home.html" class="active"><i class="fas fa-chart-pie"></i> Dashboard</a>
+        <a href="citas.html"><i class="fas fa-calendar-alt"></i> Citas</a>
+        <a href="pedidos.html"><i class="fas fa-shopping-cart"></i> Pedidos</a>
+        <a href="usuarios.html"><i class="fas fa-users"></i> Usuarios</a>
+        <a href="inventario.html"><i class="fas fa-warehouse"></i> Inventario</a>
+        <div class="sidebar-section">Análisis</div>
+        <a href="reportes.html"><i class="fas fa-chart-bar"></i> Reportes</a>
+        <div class="sidebar-section">Sistema</div>
+        <a href="configuracion.html"><i class="fas fa-cog"></i> Configuración</a>
+    </nav>
+    <div class="sidebar-footer">
+        <a href="#" onclick="adminLogout()">
+            <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+        </a>
+    </div>
+</aside>
+
+<!-- ==================== MAIN ==================== -->
+<main class="main" id="mainContent">
+
+    <!-- TOPBAR -->
+    <header class="topbar">
+        <div class="topbar-left">
+            <button class="sidebar-toggle" onclick="toggleSidebar()" title="Menú">
+                <i class="fas fa-bars"></i>
+            </button>
+            <div>
+                <h2>Dashboard</h2>
+                <div class="breadcrumb">Admin / <span>Inicio</span></div>
+            </div>
+        </div>
+        <div class="topbar-right">
+            <!-- Bell -->
+            <div class="notif-wrap" id="notifWrap">
+                <button class="topbar-badge" id="notifBtn" onclick="toggleNotifs()" title="Notificaciones">
+                    <i class="fas fa-bell"></i>
+                    <span class="notif-dot" id="notifDot" style="display:none;"></span>
+                </button>
+                <div class="notif-panel" id="notifPanel">
+                    <div class="notif-header"><strong>Notificaciones</strong></div>
+                    <div id="notifLista">
+                        <p style="color:var(--text3);padding:20px 18px;text-align:center;font-size:13px;">
+                            Sin notificaciones nuevas
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <!-- Avatar -->
+            <div class="admin-avatar-wrap" style="position:relative;">
+                <div class="admin-avatar" title="Kenner — Admin" onclick="toggleAvatarMenu()" style="cursor:pointer;">K</div>
+                <div id="avatarMenu" class="avatar-menu">
+                    <div class="avatar-menu-header">Administrador</div>
+                    <a href="configuracion.html"><i class="fas fa-cog" style="color:var(--primary);"></i> Configuración</a>
+                    <a href="#" onclick="adminLogout()" class="danger"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+        <!-- Welcome -->
+        <div style="margin-bottom:22px;">
+            <h1 style="font-family:'Varela Round',sans-serif;font-size:20px;font-weight:700;color:var(--text);margin-bottom:4px;">
+                BIENVENIDO AL PANEL ADMIN
+            </h1>
+            <p style="color:var(--text3);font-size:13px;">
+                Resumen en tiempo real de MOTO PRO Cartagena
+            </p>
+        </div>
+
+        <!-- ===== STAT CARDS ===== -->
+        <div class="stats-grid">
+
+            <!-- card 1: azul borde -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    <label>Total Citas</label>
+                    <div class="stat-icono primary"><i class="fas fa-calendar-check"></i></div>
+                </div>
+                <div class="stat-valor" id="statCitas">—</div>
+                <div class="stat-sub">Citas agendadas</div>
+                <div class="stat-change up">
+                    <i class="fas fa-arrow-up"></i> +12%
+                    <span>vs mes anterior</span>
+                </div>
+            </div>
+
+            <!-- card 2: verde borde -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    <label>Total Pedidos</label>
+                    <div class="stat-icono verde"><i class="fas fa-shopping-bag"></i></div>
+                </div>
+                <div class="stat-valor" id="statPedidos">—</div>
+                <div class="stat-sub">Órdenes recibidas</div>
+                <div class="stat-change up">
+                    <i class="fas fa-arrow-up"></i> +8%
+                    <span>vs mes anterior</span>
+                </div>
+            </div>
+
+            <!-- card 3: rojo borde -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    <label>Ingresos Totales</label>
+                    <div class="stat-icono rojo"><i class="fas fa-dollar-sign"></i></div>
+                </div>
+                <div class="stat-valor" id="statIngresos" style="font-size:1.3rem;">—</div>
+                <div class="stat-sub">Total en ventas</div>
+                <div class="stat-change up">
+                    <i class="fas fa-arrow-up"></i> +15%
+                    <span>vs mes anterior</span>
+                </div>
+            </div>
+
+            <!-- card 4: naranja borde -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    <label>Clientes Únicos</label>
+                    <div class="stat-icono morado"><i class="fas fa-users"></i></div>
+                </div>
+                <div class="stat-valor" id="statUsuarios">—</div>
+                <div class="stat-sub">Usuarios activos</div>
+                <div class="stat-change down">
+                    <i class="fas fa-arrow-down"></i> -2%
+                    <span>vs mes anterior</span>
+                </div>
+            </div>
+
+        </div><!-- /stats-grid -->
+
+        <!-- ===== CHART + RECENT PEDIDOS ===== -->
+        <div class="grid-chart-recent">
+
+            <!-- Chart -->
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h3><i class="fas fa-chart-line"></i> Citas por Mes</h3>
+                    <div class="chart-toggle-group">
+                        <button id="btnSemana" onclick="cambiarVistaGrafica('semana')">Semana</button>
+                        <button id="btnMes" class="active" onclick="cambiarVistaGrafica('mes')">Mes</button>
+                    </div>
+                </div>
+                <div class="admin-card-body" style="padding:16px 22px 20px;">
+                    <canvas id="graficaCitas" height="155"></canvas>
+                </div>
+            </div>
+
+            <!-- Recent pedidos -->
+            <div class="admin-card">
+                <div class="admin-card-header">
+                    <h3><i class="fas fa-shopping-cart"></i> Pedidos Recientes</h3>
+                    <a href="pedidos.html" class="btn-admin outline sm">Ver todos</a>
+                </div>
+                <div id="pedidosRecientes">
+                    <div class="empty-state" style="padding:32px 0;">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Cargando...</p>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /grid-chart-recent -->
+
+        <!-- ===== RECENT CITAS TABLE ===== -->
+        <div class="admin-card">
+            <div class="admin-card-header">
+                <h3><i class="fas fa-calendar-alt"></i> Citas Recientes</h3>
+                <a href="citas.html" class="btn-admin outline sm">Ver todas</a>
+            </div>
+            <div style="overflow-x:auto;">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Técnico</th>
+                            <th>Estado</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="citasRecientes">
+                        <tr>
+                            <td colspan="6" style="text-align:center;color:var(--text3);padding:40px;">
+                                <i class="fas fa-spinner fa-spin" style="margin-right:6px;"></i>Cargando...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div><!-- /content -->
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/dashboard.js"></script>
+</body>
+</html>

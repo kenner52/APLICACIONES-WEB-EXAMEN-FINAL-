@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario — MOTO PRO Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    <style>
+        .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center; }
+        .modal-overlay.abierto { display:flex; }
+        .modal-box { background:#fff; border-radius:16px; padding:28px; max-width:540px; width:90%; max-height:90vh; overflow-y:auto; position:relative; }
+        .modal-box h3 { font-size:18px; font-weight:700; color:var(--text); margin-bottom:20px; display:flex; align-items:center; gap:8px; }
+        .form-group { margin-bottom:16px; }
+        .form-group label { display:block; font-size:12px; font-weight:600; color:var(--text2); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.5px; }
+        .form-group input, .form-group select, .form-group textarea { width:100%; border:1px solid var(--border); border-radius:8px; padding:10px 12px; font-size:13px; color:var(--text); outline:none; font-family:inherit; transition:border-color 0.2s; }
+        .form-group textarea { resize:vertical; min-height:90px; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:var(--primary); }
+        .modal-btns { display:flex; gap:10px; margin-top:20px; }
+        .modal-cerrar-x { position:absolute; top:14px; right:16px; background:none; border:none; font-size:20px; cursor:pointer; color:var(--text3); }
+        .modal-cerrar-x:hover { color:var(--text); }
+    </style>
+</head>
+<body>
+
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo" style="justify-content:center;">
+        <img src="../fotos/logo.png" alt="MOTO PRO" style="height:48px;width:auto;object-fit:contain;">
+    </div>
+    <nav class="sidebar-nav">
+        <div class="sidebar-section">Principal</div>
+        <a href="home.html"><i class="fas fa-chart-pie"></i> Dashboard</a>
+        <a href="citas.html"><i class="fas fa-calendar-alt"></i> Citas</a>
+        <a href="pedidos.html"><i class="fas fa-shopping-cart"></i> Pedidos</a>
+        <a href="usuarios.html"><i class="fas fa-users"></i> Usuarios</a>
+        <a href="inventario.html" class="active"><i class="fas fa-warehouse"></i> Inventario</a>
+        <div class="sidebar-section">Análisis</div>
+        <a href="reportes.html"><i class="fas fa-chart-bar"></i> Reportes</a>
+        <div class="sidebar-section">Sistema</div>
+        <a href="configuracion.html"><i class="fas fa-cog"></i> Configuración</a>
+    </nav>
+    <div class="sidebar-footer">
+        <a href="#" onclick="adminLogout()"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+    </div>
+</aside>
+
+<main class="main" id="mainContent">
+    <header class="topbar">
+        <div class="topbar-left">
+            <button class="sidebar-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+            <div>
+                <h2>Inventario</h2>
+                <div class="breadcrumb">Admin / <span>Inventario</span></div>
+            </div>
+        </div>
+        <div class="topbar-right">
+            <div class="notif-wrap" id="notifWrap">
+                <button class="topbar-badge" id="notifBtn" onclick="toggleNotifs()">
+                    <i class="fas fa-bell"></i>
+                    <span class="notif-dot" id="notifDot" style="display:none;"></span>
+                </button>
+                <div class="notif-panel" id="notifPanel">
+                    <div class="notif-header"><strong>Notificaciones</strong></div>
+                    <div id="notifLista"><p style="color:var(--text3);padding:20px;text-align:center;font-size:13px;">Sin notificaciones nuevas</p></div>
+                </div>
+            </div>
+            <div class="admin-avatar-wrap" style="position:relative;">
+                <div class="admin-avatar" title="Kenner — Admin" onclick="toggleAvatarMenu()" style="cursor:pointer;">K</div>
+                <div id="avatarMenu" class="avatar-menu">
+                    <div class="avatar-menu-header">Administrador</div>
+                    <a href="configuracion.html"><i class="fas fa-cog" style="color:var(--primary);"></i> Configuración</a>
+                    <a href="#" onclick="adminLogout()" class="danger"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="content">
+
+        <!-- Stats -->
+        <div class="stats-grid" style="margin-bottom:24px;">
+            <div class="stat-card">
+                <div class="stat-header"><label>Total Productos</label><div class="stat-icono primary"><i class="fas fa-boxes"></i></div></div>
+                <div class="stat-valor" id="statTotal">—</div>
+                <div class="stat-sub">En catálogo</div>
+                <div class="stat-change up"><i class="fas fa-check"></i> <span>Sincronizado</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header"><label>Activos</label><div class="stat-icono verde"><i class="fas fa-check-circle"></i></div></div>
+                <div class="stat-valor" id="statActivos">—</div>
+                <div class="stat-sub">Visibles en tienda</div>
+                <div class="stat-change up"><i class="fas fa-check"></i> <span>Disponibles</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header"><label>Categorías</label><div class="stat-icono azul"><i class="fas fa-tags"></i></div></div>
+                <div class="stat-valor" id="statCats">—</div>
+                <div class="stat-sub">Categorías activas</div>
+                <div class="stat-change up"><i class="fas fa-check"></i> <span>Organizadas</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header"><label>Inactivos</label><div class="stat-icono rojo"><i class="fas fa-times-circle"></i></div></div>
+                <div class="stat-valor" id="statInactivos">—</div>
+                <div class="stat-sub">Ocultos en tienda</div>
+                <div class="stat-change up"><i class="fas fa-check"></i> <span>Sin agotados</span></div>
+            </div>
+        </div>
+
+        <!-- Tabla -->
+        <div class="admin-card">
+            <div class="search-bar">
+                <div class="search-input-wrap" style="flex:1;">
+                    <i class="fas fa-search"></i>
+                    <input class="search-input" type="text" id="buscarInventario" placeholder="Buscar producto, categoría..." oninput="buscarEnTabla('buscarInventario','tablaInv')">
+                </div>
+                <select class="filter-select" onchange="filtrarCat(this.value)">
+                    <option value="">Todas las categorías</option>
+                    <option value="servicios">Servicios</option>
+                    <option value="kits-motor">Kits de Motor</option>
+                    <option value="frenos">Frenos</option>
+                    <option value="transmision">Transmisión</option>
+                    <option value="suspension">Suspensión</option>
+                    <option value="accesorios">Accesorios</option>
+                </select>
+                <button class="btn-admin primary" onclick="abrirModalNuevo()">
+                    <i class="fas fa-plus"></i> Nuevo Producto
+                </button>
+            </div>
+
+            <div class="admin-card-header" style="border-top:1px solid var(--border);">
+                <h3><i class="fas fa-warehouse"></i> Listado de Productos</h3>
+                <span id="contadorTabla" style="font-size:12px;color:var(--text3);"></span>
+            </div>
+
+            <div style="overflow-x:auto;">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Categoría</th>
+                            <th>Precio</th>
+                            <th>Descripción</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaInv">
+                        <tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text3);"><i class="fas fa-spinner fa-spin"></i> Cargando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- MODAL EDITAR / NUEVO -->
+<div class="modal-overlay" id="modalProducto">
+    <div class="modal-box" autocomplete="off">
+        <button class="modal-cerrar-x" onclick="cerrarModalProducto()">×</button>
+        <h3><i class="fas fa-box" style="color:var(--primary);"></i> <span id="modalTitulo">Nuevo Producto</span></h3>
+        <input type="hidden" id="productoId">
+        <div class="form-group">
+            <label>Nombre del producto</label>
+            <input type="text" id="pNombre" placeholder="Ej: Cadena Dorada S20" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label>Categoría</label>
+            <select id="pCategoria" autocomplete="off">
+                <option value="servicios">Servicios</option>
+                <option value="kits-motor">Kits de Motor</option>
+                <option value="frenos">Frenos</option>
+                <option value="transmision">Transmisión</option>
+                <option value="suspension">Suspensión</option>
+                <option value="accesorios">Accesorios</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Precio</label>
+            <input type="text" id="pPrecio" placeholder="Ej: COP 120.000" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label>Descripción (aparece en la página web)</label>
+            <textarea id="pDescripcion" placeholder="Escribe una descripción detallada del producto..." autocomplete="off"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Foto del producto</label>
+            <!-- Preview -->
+            <div id="imgPreviewWrap" style="display:none; margin-bottom:10px; text-align:center;">
+                <img id="imgPreview" src="" alt="Preview" style="max-height:140px; max-width:100%; border-radius:10px; border:1px solid var(--border); object-fit:contain;">
+            </div>
+            <!-- Upload -->
+            <label for="pFotoFile" style="display:flex; align-items:center; gap:10px; background:var(--bg); border:2px dashed var(--border); border-radius:10px; padding:14px 16px; cursor:pointer; transition:border-color 0.2s; text-transform:none; letter-spacing:0; font-weight:400; color:var(--text2); font-size:13px;" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border)'">
+                <i class="fas fa-cloud-upload-alt" style="font-size:22px; color:var(--primary);"></i>
+                <div>
+                    <div style="font-weight:600; color:var(--text); font-size:13px;">Subir imagen</div>
+                    <div style="font-size:11px; color:var(--text3);">JPG, PNG, WEBP · Máx. 5MB</div>
+                </div>
+                <span id="nombreArchivo" style="margin-left:auto; font-size:11px; color:var(--primary);"></span>
+            </label>
+            <input type="file" id="pFotoFile" accept="image/*" style="display:none;" onchange="previsualizarFoto(this)">
+            <!-- O pegar URL -->
+            <div style="display:flex; align-items:center; gap:8px; margin-top:10px;">
+                <div style="flex:1; height:1px; background:var(--border);"></div>
+                <span style="font-size:11px; color:var(--text3);">o pegar URL</span>
+                <div style="flex:1; height:1px; background:var(--border);"></div>
+            </div>
+            <input type="text" id="pImagen" placeholder="https://..." style="margin-top:8px;" oninput="mostrarPreviewURL(this.value)" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label>Estado</label>
+            <select id="pActivo">
+                <option value="true">Activo (visible en tienda)</option>
+                <option value="false">Inactivo (oculto)</option>
+            </select>
+        </div>
+        <div class="modal-btns">
+            <button class="btn-admin primary" style="flex:1;" onclick="guardarProducto()"><i class="fas fa-save"></i> Guardar cambios</button>
+            <button class="btn-admin outline" onclick="cerrarModalProducto()">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/dashboard.js"></script>
+<script>
+var SUPABASE_URL = 'https://hhjwavixqjdpkvuodumf.supabase.co';
+var SUPABASE_KEY = 'sb_publishable_JDcmWaqihSSoUpq9Fo6LCA_7jHTyUy5';
+var dbInv = null;
+var todosProductos = [];
+
+var catColors  = { 'servicios':'#0D6EBE','kits-motor':'#8b5cf6','frenos':'#ef4444','transmision':'#f59e0b','suspension':'#22c55e','accesorios':'#64748b' };
+var catLabels  = { 'servicios':'Servicios','kits-motor':'Kits de Motor','frenos':'Frenos','transmision':'Transmisión','suspension':'Suspensión','accesorios':'Accesorios' };
+
+// Cliente propio para inventario
+var dbInv = null;
+window.addEventListener('load', function() {
+    dbInv = window.supabase.createClient(
+        'https://hhjwavixqjdpkvuodumf.supabase.co',
+        'sb_publishable_JDcmWaqihSSoUpq9Fo6LCA_7jHTyUy5'
+    );
+    cargarInventario();
+});
+
+async function cargarInventario() {
+    var tbody = document.getElementById('tablaInv');
+    if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:#64748b;"><i class="fas fa-spinner fa-spin"></i> Cargando...</td></tr>';
+
+    var { data, error } = await dbInv.from('productos').select('*').order('categoria').order('nombre');
+
+    if (error) {
+        if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;color:red;font-size:12px;">❌ ' + error.message + '</td></tr>';
+        return;
+    }
+
+    data = data || [];
+    todosProductos = data;
+    renderTabla(data);
+    actualizarStats(data);
+}
+
+
+function actualizarStats(lista) {
+    var activos = lista.filter(function(p) { return p.activo; }).length;
+    var cats = new Set(lista.map(function(p) { return p.categoria; })).size;
+    document.getElementById('statTotal').textContent = lista.length;
+    document.getElementById('statActivos').textContent = activos;
+    document.getElementById('statCats').textContent = cats;
+    document.getElementById('statInactivos').textContent = lista.length - activos;
+    document.getElementById('contadorTabla').textContent = lista.length + ' productos';
+}
+
+function renderTabla(lista) {
+    var tbody = document.getElementById('tablaInv');
+    if (!lista.length) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text3);">No hay productos</td></tr>';
+        return;
+    }
+    tbody.innerHTML = lista.map(function(p) {
+        var color = catColors[p.categoria] || '#64748b';
+        var label = catLabels[p.categoria] || p.categoria;
+        var desc = p.descripcion ? p.descripcion.substring(0, 60) + '...' : '—';
+        var estadoBadge = p.activo
+            ? '<span class="badge-status active">Activo</span>'
+            : '<span class="badge-status cancelled">Inactivo</span>';
+        return '<tr id="fila-prod-' + p.id + '">' +
+            '<td><div style="display:flex;align-items:center;gap:10px;">' +
+                '<div style="width:36px;height:36px;background:' + color + '18;border-radius:8px;display:flex;align-items:center;justify-content:center;color:' + color + ';font-size:14px;flex-shrink:0;"><i class="fas fa-cog"></i></div>' +
+                '<strong style="font-size:13px;">' + p.nombre + '</strong>' +
+            '</div></td>' +
+            '<td><span style="background:' + color + '18;color:' + color + ';padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;">' + label + '</span></td>' +
+            '<td style="font-weight:700;color:var(--primary);">' + (p.precio || '—') + '</td>' +
+            '<td style="font-size:12px;color:var(--text2);max-width:200px;">' + desc + '</td>' +
+            '<td>' + estadoBadge + '</td>' +
+            '<td><div style="display:flex;gap:6px;">' +
+                '<button class="btn-admin outline sm" onclick="abrirModalEditar(\'' + p.id + '\')"><i class="fas fa-pen"></i></button>' +
+                '<button class="btn-admin danger sm" onclick="eliminarProducto(\'' + p.id + '\')"><i class="fas fa-trash"></i></button>' +
+            '</div></td>' +
+        '</tr>';
+    }).join('');
+}
+
+function filtrarCat(cat) {
+    var filtrados = cat ? todosProductos.filter(function(p) { return p.categoria === cat; }) : todosProductos;
+    renderTabla(filtrados);
+}
+
+// ===== MODAL =====
+function previsualizarFoto(input) {
+    var file = input.files[0];
+    if (!file) return;
+    document.getElementById('nombreArchivo').textContent = file.name;
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        document.getElementById('imgPreview').src = e.target.result;
+        document.getElementById('imgPreviewWrap').style.display = 'block';
+        document.getElementById('pImagen').value = ''; // limpiar URL si subió archivo
+    };
+    reader.readAsDataURL(file);
+}
+
+function mostrarPreviewURL(url) {
+    if (url) {
+        document.getElementById('imgPreview').src = url;
+        document.getElementById('imgPreviewWrap').style.display = 'block';
+        document.getElementById('pFotoFile').value = '';
+        document.getElementById('nombreArchivo').textContent = '';
+    }
+}
+
+function resetModalFoto() {
+    document.getElementById('imgPreviewWrap').style.display = 'none';
+    document.getElementById('imgPreview').src = '';
+    document.getElementById('pFotoFile').value = '';
+    document.getElementById('nombreArchivo').textContent = '';
+}
+
+function abrirModalNuevo() {
+    document.getElementById('modalTitulo').textContent = 'Nuevo Producto';
+    document.getElementById('productoId').value = '';
+    document.getElementById('pNombre').value = '';
+    document.getElementById('pCategoria').value = 'servicios';
+    document.getElementById('pPrecio').value = '';
+    document.getElementById('pDescripcion').value = '';
+    document.getElementById('pImagen').value = '';
+    document.getElementById('pActivo').value = 'true';
+    resetModalFoto();
+    document.getElementById('modalProducto').classList.add('abierto');
+}
+
+function abrirModalEditar(id) {
+    var p = todosProductos.find(function(x) { return x.id === id; });
+    if (!p) return;
+    document.getElementById('modalTitulo').textContent = 'Editar Producto';
+    document.getElementById('productoId').value = p.id;
+    document.getElementById('pNombre').value = p.nombre || '';
+    document.getElementById('pCategoria').value = p.categoria || 'servicios';
+    document.getElementById('pPrecio').value = p.precio || '';
+    document.getElementById('pDescripcion').value = p.descripcion || '';
+    document.getElementById('pImagen').value = p.imagen || '';
+    document.getElementById('pActivo').value = p.activo ? 'true' : 'false';
+    resetModalFoto();
+    if (p.imagen) {
+        document.getElementById('imgPreview').src = p.imagen;
+        document.getElementById('imgPreviewWrap').style.display = 'block';
+    }
+    document.getElementById('modalProducto').classList.add('abierto');
+}
+
+function cerrarModalProducto() {
+    document.getElementById('modalProducto').classList.remove('abierto');
+}
+
+async function guardarProducto() {
+    var id = document.getElementById('productoId').value;
+    var nombre = document.getElementById('pNombre').value.trim();
+    if (!nombre) { alert('El nombre es obligatorio'); return; }
+
+    var btn = document.querySelector('#modalProducto .btn-admin.primary');
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+    btn.disabled = true;
+
+    // Subir imagen si se seleccionó archivo
+    var imagenUrl = document.getElementById('pImagen').value.trim();
+    var fileInput = document.getElementById('pFotoFile');
+    if (fileInput.files && fileInput.files[0]) {
+        var file = fileInput.files[0];
+        var ext = file.name.split('.').pop();
+        var fileName = 'prod_' + Date.now() + '.' + ext;
+        try {
+            var { data: upData, error: upErr } = await dbInv.storage.from('productos').upload(fileName, file, { upsert: true });
+            if (upErr) {
+                console.warn('Storage no disponible, guardando sin imagen:', upErr.message);
+                // Si hay URL manual la usamos; si no, guardamos sin imagen
+            } else {
+                var { data: urlData } = dbInv.storage.from('productos').getPublicUrl(fileName);
+                imagenUrl = urlData.publicUrl;
+            }
+        } catch(e) {
+            console.warn('Error de almacenamiento, guardando sin imagen:', e.message);
+        }
+    }
+
+    var datos = {
+        nombre:      nombre,
+        categoria:   document.getElementById('pCategoria').value,
+        precio:      document.getElementById('pPrecio').value.trim(),
+        descripcion: document.getElementById('pDescripcion').value.trim(),
+        imagen:      imagenUrl,
+        activo:      document.getElementById('pActivo').value === 'true'
+    };
+
+    var error;
+    if (id) {
+        var res = await dbInv.from('productos').update(datos).eq('id', id);
+        error = res.error;
+    } else {
+        var res = await dbInv.from('productos').insert([datos]);
+        error = res.error;
+    }
+
+    btn.innerHTML = '<i class="fas fa-save"></i> Guardar cambios';
+    btn.disabled = false;
+
+    if (error) { alert('Error: ' + error.message); return; }
+
+    cerrarModalProducto();
+    await cargarInventario();
+}
+
+async function eliminarProducto(id) {
+    if (!confirm('¿Eliminar este producto del catálogo?')) return;
+    var { error } = await dbInv.from('productos').delete().eq('id', id);
+    if (error) { alert('Error: ' + error.message); return; }
+    todosProductos = todosProductos.filter(function(p) { return p.id !== id; });
+    var fila = document.getElementById('fila-prod-' + id);
+    if (fila) fila.remove();
+    actualizarStats(todosProductos);
+}
+</script>
+</body>
+</html>
