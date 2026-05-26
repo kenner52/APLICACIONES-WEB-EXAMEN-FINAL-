@@ -964,7 +964,7 @@
                     <input type="text" placeholder="Número de tarjeta" class="input-pago" maxlength="19" oninput="formatarTarjeta(this)">
                     <div class="fila-inputs"><input type="text" placeholder="MM/AA" class="input-pago" maxlength="5"><input type="text" placeholder="CVV" class="input-pago" maxlength="3"></div>
                     <input type="text" placeholder="Nombre en la tarjeta" class="input-pago">
-                    <button class="boton-pagar" onclick="procesarPago()">Pagar $200.000</button>
+                    <button class="boton-pagar" id="btnPagarFinal" onclick="procesarPago()">Pagar</button>
                 </div>
             </div>
         </div>
@@ -977,7 +977,7 @@
             <div id="carritoContenido" class="carrito-contenido"><p style="text-align:center;color:#aaa;padding:40px 20px;">Tu carrito está vacío</p></div>
             <div class="carrito-pie">
                 <strong style="font-size:18px;">Total: <span id="carritoTotal" class="rojo">$0</span></strong>
-                <button class="boton-pagar" onclick="cerrarModal('modalCarrito');abrirModal('modalPago')">Proceder al Pago</button>
+                <button class="boton-pagar" onclick="abrirPago()">Proceder al Pago</button>
             </div>
         </div>
     </div>

@@ -290,6 +290,28 @@ function cerrarModal(id) {
     document.body.style.overflow = 'auto';
 }
 
+function abrirPago() {
+    if (!usuarioActivo) {
+        cerrarModal('modalCarrito');
+        abrirModal('modalLogin');
+        mostrarMensaje('Debes iniciar sesión para proceder al pago');
+        return;
+    }
+    if (carrito.length === 0) {
+        mostrarMensaje('Tu carrito está vacío');
+        return;
+    }
+    // Actualizar precio real en el botón
+    var total = document.getElementById('carritoTotal').textContent;
+    var btnPagar = document.getElementById('btnPagarFinal');
+    if (btnPagar) btnPagar.textContent = 'Pagar ' + total;
+    // Pre-llenar correo del usuario
+    var emailInput = document.getElementById('emailPago');
+    if (emailInput && usuarioActivo.email) emailInput.value = usuarioActivo.email;
+    cerrarModal('modalCarrito');
+    abrirModal('modalPago');
+}
+
 window.addEventListener('click', function(e) {
     document.querySelectorAll('.modal').forEach(function(modal) {
         if (e.target === modal) {
@@ -813,10 +835,28 @@ async function guardarCitaEnDB(fecha, hora, tecnico, observaciones, tipoMantenim
 
 async function guardarPedidoEnDB(productos, total) {
     if (!usuarioActivo || !supabaseClient) return;
-    await supabaseClient.from('pedidos').insert({
+    var productosGuardar = productos.map(function(p) { return { nombre: p.nombre, precio: p.precio }; });
+    var { error } = await supabaseClient.from('pedidos').insert({
         usuario_email: usuarioActivo.email,
-        productos: productos, total: total
+        usuario_nombre: usuarioActivo.nombre,
+        productos: productosGuardar,
+        total: total
     });
+    if (error) console.log('Error guardando pedido:', error.message);
+}
+
+async function notificarAdminPedido(productos, total) {
+    try {
+        var productosTexto = productos.map(function(p) { return p.nombre + ' — ' + p.precio; }).join('\n');
+        await emailjs.send('service_9q186b4', 'template_1kg5d8g', {
+            email: 'kenner7894@gmail.com',
+            usuario_nombre: 'ADMIN MOTO PRO',
+            productos: '🛒 NUEVO PEDIDO de ' + (usuarioActivo ? usuarioActivo.email : 'cliente') + ':\n\n' + productosTexto,
+            total: total
+        });
+    } catch(e) {
+        console.log('Error notif admin:', e);
+    }
 }
 
 // ===================== BUSCADOR Y FILTROS =====================
@@ -945,8 +985,9 @@ async function procesarPago() {
     var total = document.getElementById('carritoTotal').textContent;
     var productosTexto = carrito.map(function(p) { return p.nombre; }).join(', ');
 
-    guardarPedidoEnDB(carrito, total);
+    await guardarPedidoEnDB(carrito, total);
     enviarCorreoCompra(email, productosTexto, total);
+    notificarAdminPedido(carrito, total);
 
     cerrarModal('modalPago');
     mostrarMensaje('¡Pago exitoso! Confirmación enviada a ' + email + ' ✓');
