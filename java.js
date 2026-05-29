@@ -380,7 +380,13 @@ async function registrarUsuario() {
     });
 
     if (resultado.error) {
-        alert('Error: ' + resultado.error.message);
+        if (resultado.error.message.includes('already registered') || resultado.error.message.includes('already been registered')) {
+            mostrarMensaje('Este correo ya tiene cuenta. Inicia sesión.');
+            mostrarPasoPassword();
+            document.getElementById('emailUsuario').value = email;
+        } else {
+            mostrarMensaje('Error: ' + resultado.error.message);
+        }
         return;
     }
 
