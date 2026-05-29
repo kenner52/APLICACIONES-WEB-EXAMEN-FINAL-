@@ -425,7 +425,7 @@ async function loginGoogle() {
         provider: 'google',
         options: {
             prompt: 'select_account',
-            redirectTo: 'http://127.0.0.1:3000/index.html'
+            redirectTo: 'https://aplicaciones-web-examen-final.vercel.app/index.html'
         }
     });
     if (error) mostrarMensaje('Error al conectar con Google');
