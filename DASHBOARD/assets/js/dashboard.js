@@ -168,7 +168,7 @@ async function cargarHome() {
         } else {
             listaPedidos.innerHTML = pedidos.slice(-6).reverse().map(function (p) {
                 var inicial = (p.usuario_email || 'U')[0].toUpperCase();
-                var fecha   = new Date(p.created_at).toLocaleDateString('es-CO', { day: '2-digit', month: 'short' });
+                var fecha   = new Date(p.created_at).toLocaleDateString('es-CO', { day: '2-digit', month: 'short', timeZone: 'America/Bogota' });
                 var idCorto = 'MP-' + String(p.id).substring(0, 6).toUpperCase();
                 var badge   = p.estado ? estadoToBadge(p.estado) : 'active';
                 var badgeLbl= p.estado ? p.estado.charAt(0).toUpperCase() + p.estado.slice(1) : 'Recibido';
@@ -372,7 +372,7 @@ async function cargarPedidos() {
                 '<td>' + (p.usuario_email || '—') + '</td>' +
                 '<td style="max-width:220px;font-size:12px;color:var(--text2);">' + (prods || '—') + '</td>' +
                 '<td><strong style="color:var(--primary);">' + (p.total || '—') + '</strong></td>' +
-                '<td>' + new Date(p.created_at).toLocaleDateString('es-CO') + '</td>' +
+                '<td>' + new Date(p.created_at).toLocaleDateString('es-CO', { timeZone: 'America/Bogota' }) + '</td>' +
                 '<td>' +
                     '<button onclick="eliminarPedido(\'' + p.id + '\')" class="btn-admin danger sm">' +
                         '<i class="fas fa-trash"></i> Borrar' +
@@ -455,7 +455,7 @@ async function cargarUsuarios() {
                 '<td style="color:var(--text2);">' + (u.email || '—') + '</td>' +
                 '<td><span class="badge-status active">' + u.citas + ' cita' + (u.citas !== 1 ? 's' : '') + '</span></td>' +
                 '<td><span class="badge-status shipped">' + u.pedidos + ' pedido' + (u.pedidos !== 1 ? 's' : '') + '</span></td>' +
-                '<td style="color:var(--text3);font-size:12px;">' + new Date(u.fecha).toLocaleDateString('es-CO') + '</td>' +
+                '<td style="color:var(--text3);font-size:12px;">' + new Date(u.fecha).toLocaleDateString('es-CO', { timeZone: 'America/Bogota' }) + '</td>' +
             '</tr>'
         );
     }).join('');
